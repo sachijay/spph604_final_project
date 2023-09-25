@@ -9,5 +9,25 @@ source(
 ## Read data ####
 
 load(
-  file = here::here("data", "combined_dataset.rdata")
+  file = here::here("data", "final_data.rdata")
 )
+
+
+## Explore missing values ####
+## Note: Should tell if a variable is not matched at all 
+##        between the cycles
+
+dat_combined %>% 
+  group_by(
+    cycle
+  ) %>% 
+  summarise(
+    n = n(),
+    across(
+      .cols = !n,
+      .fns = ~ sum(is.na(.x))
+    )
+  )
+
+
+## 
