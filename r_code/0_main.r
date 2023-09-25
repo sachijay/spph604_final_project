@@ -1,7 +1,7 @@
 ## Main file for the project
 
 ## Install missing packages
-cran_pkgs <- c("tidyverse", "here")
+cran_pkgs <- c("devtools", "tidyverse", "here")
 if(length(missing_pkgs <- setdiff(cran_pkgs, row.names(utils::installed.packages()))) > 0){
   
   message("Installing missing package(s): ",
@@ -17,6 +17,12 @@ if(length(missing_pkgs <- setdiff(cran_pkgs, row.names(utils::installed.packages
 rm(cran_pkgs, missing_pkgs)
 
 
+## Install custom packages (UNCOMMENT IF NOT INSTALLED!!!!!!!!)
+
+# devtools::install_github("sachijay/miscr")
+
+
 ## Load libraries ####
 
 library(tidyverse)
+library(miscr) ## This is a custom package installed from GitHub (commented above)
