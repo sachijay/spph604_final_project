@@ -401,9 +401,22 @@ dat_combined <- bind_rows(
 )
 
 
+## Apply exclusion criteria ####
+
+dat <- dat_combined %>% ## 25,531 records
+  filter(
+    asthma == "Yes", ## 3,765 records remaining
+    age_years >= 20, ## 2,284 records remaining
+    !is.na(has_insurance), ## 2,275 records remaining
+    !is.na(copd_or_others) ## 2,264 records remaining
+  ) %>% 
+  droplevels.data.frame()
+
+
 ## Save the final data set into a file ####
 
 save(
   dat_combined,
+  dat,
   file = here::here("data", "final_data.rdata")
 )
