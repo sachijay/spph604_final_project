@@ -184,8 +184,8 @@ dat_17_medical_conditions <- dat_17_medical_conditions_raw %>%
       asthma == 2 ~ "No"
     ),
     copd_or_others = fct_case_when( ## Refused and don't know as NA
-      copd_or_others == 1 ~ "Yes",
-      copd_or_others == 2 ~ "No"
+      copd_or_others == 1 ~ "Has COPD, emphysema, ChB",
+      copd_or_others == 2 ~ "Doesn't have COPD, emphysema, ChB"
     ),
     relative_asthma = miscr::fct_case_when( ## Refused and don't know as NA
       relative_asthma == 1 ~ "Yes",
