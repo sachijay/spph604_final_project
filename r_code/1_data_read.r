@@ -141,8 +141,8 @@ dat_15_medical_conditions <- dat_15_medical_conditions_raw %>%
     asthma = MCQ010,
     copd_1 = MCQ160G, copd_2 = MCQ160K, copd_3 = MCQ160O,
     relative_asthma = MCQ300B,
-    cancer_type_1 = MCQ230A, cancer_type_2 = MCQ230B, cancer_type_3 = MCQ230C, cancer_type_4 = MCQ230D,
-    asthma_ed_visits_year = MCQ050
+    asthma_ed_visits_year = MCQ050,
+    cancer_type_1 = MCQ230A, cancer_type_2 = MCQ230B, cancer_type_3 = MCQ230C, cancer_type_4 = MCQ230D
   ) %>% 
   mutate(
     asthma = fct_case_when( ## Refused and don't know as NA
@@ -175,8 +175,8 @@ dat_17_medical_conditions <- dat_17_medical_conditions_raw %>%
     asthma = MCQ010,
     copd_or_others = MCQ160P,
     relative_asthma = MCQ300B,
-    cancer_type_1 = MCQ230A, cancer_type_2 = MCQ230B, cancer_type_3 = MCQ230C, cancer_type_4 = MCQ230D,
-    asthma_ed_visits_year = MCQ050
+    asthma_ed_visits_year = MCQ050,
+    cancer_type_1 = MCQ230A, cancer_type_2 = MCQ230B, cancer_type_3 = MCQ230C, cancer_type_4 = MCQ230D
   ) %>% 
   mutate(
     asthma = fct_case_when( ## Refused and don't know as NA
