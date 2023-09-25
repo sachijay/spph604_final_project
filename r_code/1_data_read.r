@@ -395,7 +395,7 @@ dat_17 <- dat_17_demographic %>%
     by = "subject_id"
   )
 
-dat <- bind_rows(
+dat_combined <- bind_rows(
   dat_15,
   dat_17
 )
@@ -404,6 +404,6 @@ dat <- bind_rows(
 ## Save the final data set into a file ####
 
 save(
-  dat,
-  file = here::here("data", "combined_dataset.rdata")
+  dat_combined,
+  file = here::here("data", "final_data.rdata")
 )
