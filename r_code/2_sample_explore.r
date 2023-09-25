@@ -30,4 +30,35 @@ dat_combined %>%
   )
 
 
-## 
+## Explore counts in other variables ####
+
+dat_combined %>% 
+  count(
+    asthma
+  )
+
+dat_combined %>% 
+  count(
+    has_insurance
+  )
+
+dat %>% 
+  count(
+    has_insurance
+  )
+
+dat_combined %>% 
+  count(
+    copd_or_others
+  )
+
+dat %>% 
+  count(
+    copd_or_others
+  )
+
+dat %>% 
+  count(
+    copd_or_others,
+    has_insurance
+  )
