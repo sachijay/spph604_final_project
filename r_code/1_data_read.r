@@ -420,22 +420,14 @@ dat_full <- dat_combined %>%
   )
 
 ## Not used when using survey designs
-# dat <- dat_full %>% ## 25,531 records
-#   filter(
-#     asthma_inclusion, ## 3,765 records remaining
-#     age_inclusion, ## 2,284 records remaining
-#     exposure_na_inclusion, ## 2,275 records remaining
-#     response_na_inclusion ## 2,264 records remaining
-#   ) %>%
-#   droplevels.data.frame()
-
-
-## Save the final data sets into a file ####
-
-save(
-  dat_full,
-  file = here::here("data", "final_data.rdata")
-)
+dat_analytic <- dat_full %>% ## 25,531 records
+  filter(
+    asthma_inclusion, ## 3,765 records remaining
+    age_inclusion, ## 2,284 records remaining
+    exposure_na_inclusion, ## 2,275 records remaining
+    response_na_inclusion ## 2,264 records remaining
+  ) %>%
+  droplevels.data.frame()
 
 
 ## Define the survey design ####
@@ -451,4 +443,15 @@ survey_design_full <- svydesign(
 survey_design <- subset(
   survey_design_full, 
   !exclude
+)
+
+
+## Save the final data sets into a file ####
+
+save(
+  dat_full,
+  dat_analytic,
+  survey_design_full,
+  survey_design,
+  file = here::here("data", "final_data.rdata")
 )
