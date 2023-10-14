@@ -92,7 +92,9 @@ dat_17_diabetes_raw <- haven::read_xpt(
 ##    * SDDSRVYR - Data release cycle
 ##    * RIAGENDR - Gender
 ##    * RIDAGEYR - Age in years at screening
-##    * WTINT2YR - Full sample 2 year interview weight
+##    * SDMVPSU - Pseudo PSU
+##    * SDMVSTRA - Pseudo stratum
+##    * WTINTPRP (2017-2020) or WTINT2YR (2015-2016) - Full sample 2 year interview weight
 ## 
 ## Notes: Ignored age - months
 
@@ -102,6 +104,8 @@ dat_15_demographic <- dat_15_demographic_raw %>%
     cycle = SDDSRVYR,
     sex = RIAGENDR, 
     age_years = RIDAGEYR,
+    psu = SDMVPSU,
+    stratum = SDMVSTRA,
     interview_wt = WTINT2YR
   ) %>% 
   mutate(
@@ -117,6 +121,8 @@ dat_17_demographic <- dat_17_demographic_raw %>%
     cycle = SDDSRVYR,
     sex = RIAGENDR, 
     age_years = RIDAGEYR,
+    psu = SDMVPSU,
+    stratum = SDMVSTRA,
     interview_wt = WTINTPRP
   ) %>% 
   mutate(
@@ -131,7 +137,7 @@ dat_17_demographic <- dat_17_demographic_raw %>%
 ## Variables needed:
 ##    * SEQN - Respondent sequence number
 ##    * MCQ010 - Ever been told you have asthma (exclusion)
-##    * MCQ160p (2017-2018) or MCQ160G/MCQ160K/MCQ160O (2015-2016) - Ever told you had COPD, emphysema, ChB (outcome)
+##    * MCQ160p (2017-2020) or MCQ160G/MCQ160K/MCQ160O (2015-2016) - Ever told you had COPD, emphysema, ChB (outcome)
 ##    * MCQ300B - Close relative had asthma?
 ##    * MCQ050 - Emergency care visit for asthma/past yr (for exposure)
 ##    * MCQ230A/MCQ230B/MCQ230C/MCQ230D - What kind of cancer
@@ -207,7 +213,7 @@ dat_17_medical_conditions <- dat_17_medical_conditions_raw %>%
 ### Access to care ####
 ## Variables needed:
 ##    * SEQN - Respondent sequence number
-##    * HUD062 (2017-2018) or HUQ061 (2015-2016) - How long since last healthcare visit
+##    * HUD062 (2017-2020) or HUQ061 (2015-2016) - How long since last healthcare visit
 
 dat_15_access_to_care <- dat_15_access_to_care_raw %>% 
   select(
@@ -403,20 +409,46 @@ dat_combined <- bind_rows(
 
 ## Apply exclusion criteria ####
 
-dat <- dat_combined %>% ## 25,531 records
-  filter(
-    asthma == "Yes", ## 3,765 records remaining
-    age_years >= 20, ## 2,284 records remaining
-    !is.na(has_insurance), ## 2,275 records remaining
-    !is.na(copd_or_others) ## 2,264 records remaining
-  ) %>% 
-  droplevels.data.frame()
+dat_full <- dat_combined %>% 
+  mutate(
+    asthma_inclusion = asthma == "Yes",
+    age_inclusion = age_years >= 20, 
+    exposure_na_inclusion = !is.na(has_insurance), 
+    response_na_inclusion = !is.na(copd_or_others),
+    exclude = !(asthma_inclusion & age_inclusion & 
+                  exposure_na_inclusion & response_na_inclusion)
+  )
+
+## Not used when using survey designs
+# dat <- dat_full %>% ## 25,531 records
+#   filter(
+#     asthma_inclusion, ## 3,765 records remaining
+#     age_inclusion, ## 2,284 records remaining
+#     exposure_na_inclusion, ## 2,275 records remaining
+#     response_na_inclusion ## 2,264 records remaining
+#   ) %>%
+#   droplevels.data.frame()
 
 
-## Save the final data set into a file ####
+## Save the final data sets into a file ####
 
 save(
-  dat_combined,
-  dat,
+  dat_full,
   file = here::here("data", "final_data.rdata")
+)
+
+
+## Define the survey design ####
+
+survey_design_full <- svydesign(
+  id = ~psu, 
+  strata = ~stratum, 
+  weights = ~interview_wt,
+  data = dat_full, 
+  nest = TRUE
+)
+
+survey_design <- subset(
+  survey_design_full, 
+  !exclude
 )

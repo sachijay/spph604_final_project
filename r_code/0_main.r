@@ -26,3 +26,4 @@ rm(cran_pkgs, missing_pkgs)
 
 library(tidyverse)
 library(miscr) ## This is a custom package installed from GitHub (commented above)
+library(survey)
