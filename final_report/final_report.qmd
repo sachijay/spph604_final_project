@@ -1,0 +1,48 @@
+---
+title: "Association between insurance access and chronic obstructive pulmonary disease among adults with asthma in the United States"
+format:
+  pdf:
+    keep-tex: false
+    number-sections: false
+    colorlinks: true
+date: last-modified
+author:
+  - name: Pramoda Jayasinghe
+    affiliations:
+      - name: The University of British Columbia
+        department: School of population and public health
+abstract: |
+  The text of your abstract. 200 or fewer words.
+keywords:
+  - 3 to 6 keywords
+  - that do not appear in the title
+bibliography: bibliography.bib  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(survey)
+```
+
+## Introduction {#sec-intro}
+
+Asthma patients can have an increase risk of diagnosis of chronic obstructive pulmonary disease (COPD). Other risk factors accelerating time-to-COPD diagnosis includes male sex, older adults (age > 40 years), history of tobacco smoking, asthma exacerbations, frequent emergency admissions, longer hospital stay, patients with increased burden of comorbidities, obese male sex, SABA overuse, moderate and severe asthma [@asamoah-boaheng_examining_2022].
+
+
+## Methods {#sec-methods}
+
+### Study populations {#ssec-population}
+
+
+
+### Study variables {#ssec-variables}
+
+
+
+### Statistical analyses {#ssec-analyses}
+
+
+## Results {#sec-results}
+
+
