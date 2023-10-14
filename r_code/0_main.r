@@ -1,7 +1,7 @@
 ## Main file for the project
 
 ## Install missing packages
-cran_pkgs <- c("devtools", "tidyverse", "here")
+cran_pkgs <- c("devtools", "tidyverse", "here", "gtsummary")
 if(length(missing_pkgs <- setdiff(cran_pkgs, row.names(utils::installed.packages()))) > 0){
   
   message("Installing missing package(s): ",
