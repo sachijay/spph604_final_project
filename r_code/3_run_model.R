@@ -21,7 +21,7 @@ model_base <- svyglm(
   family = binomial(link = "logit")
 )
 
-tbl_regression(
+result_mod_base <- tbl_regression(
   model_base,
   exponentiate = TRUE
 )
