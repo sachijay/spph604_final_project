@@ -22,5 +22,6 @@ model_base <- svyglm(
 )
 
 tbl_regression(
-  model_base
+  model_base,
+  exponentiate = TRUE
 )

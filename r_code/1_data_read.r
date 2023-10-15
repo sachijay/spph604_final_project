@@ -440,10 +440,26 @@ survey_design_full <- svydesign(
   nest = TRUE
 )
 
+
+## Subset the survey design
+
 survey_design <- subset(
   survey_design_full, 
   !exclude
 )
+
+## Change variable labels
+survey_design$variables <- survey_design$variables %>% 
+  labelled::set_variable_labels(
+    copd_or_others = "Have/Had COPD",
+    has_insurance = "Has insurance",
+    age_years = "Age (years)",
+    relative_asthma = "Close relative with asthma",
+    asthma_ed_visits_year = "ED visits for asthma/past yr",
+    lung_cancer = "Lung cancer",
+    smoked_100_life = "Smoked more than 100 cigarettes/life",
+    num_smoke_inside = "No. of people who smoke inside"
+  )
 
 
 ## Save the final data sets into a file ####

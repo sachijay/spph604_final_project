@@ -84,10 +84,13 @@ survey_design_table1$variables <- survey_design_table1$variables %>%
       .cols = c(relative_asthma, asthma_ed_visits_year, lung_cancer, smoked_100_life, num_smoke_inside),
       .fns = ~ fct_na_value_to_level(.x, level = "Missing")
     )
+  ) %>% 
+  labelled::set_variable_labels(
+    num_smoke_inside = "No. of people who smoke inside"
   )
 
 
-tab1 <- tbl_svysummary(
+tab_1_weighted <- tbl_svysummary(
   data = survey_design_table1,
   by = copd_or_others,
   include = c(has_insurance, age_years, relative_asthma, asthma_ed_visits_year, lung_cancer, smoked_100_life, num_smoke_inside),
@@ -102,15 +105,6 @@ tab1 <- tbl_svysummary(
   digits = list(
     all_continuous() ~ 1,
     all_categorical() ~ 0
-  ),
-  label = list(
-    has_insurance ~ "Has insurance",
-    age_years ~ "Age (years)",
-    relative_asthma ~ "Close relative with asthma",
-    asthma_ed_visits_year ~ "ED visits for asthma/past yr",
-    lung_cancer ~ "Lung cancer",
-    smoked_100_life ~ "Smoked more than 100 cigarettes/life",
-    num_smoke_inside ~ "# of people who smoke inside"
   )
 ) %>% 
   add_overall(
