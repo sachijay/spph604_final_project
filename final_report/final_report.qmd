@@ -1,48 +1,139 @@
 ---
-title: "Association between insurance access and chronic obstructive pulmonary disease among adults with asthma in the United States"
+title: "Association between health insurance access and chronic obstructive pulmonary disease (COPD) among adults with asthma in the United States"
 format:
   pdf:
+    documentclass: article
     keep-tex: false
     number-sections: false
-    colorlinks: true
+    colorlinks: false
+    fig-cap-location: bottom
+    tbl-cap-location: top
+    fig-align: center
+    geometry:
+      - top = 30mm
+      - left = 20mm
+      - heightrounded
 date: last-modified
 author:
   - name: Pramoda Jayasinghe
     affiliations:
       - name: The University of British Columbia
         department: School of population and public health
-abstract: |
-  The text of your abstract. 200 or fewer words.
+# abstract: |
+#   Add abstract
 keywords:
-  - 3 to 6 keywords
-  - that do not appear in the title
-bibliography: bibliography.bib  
+  - NHANES
+  - Survey design
+  - Logistic regression
+bibliography: bibliography.bib
+csl: elsevier-vancouver.csl
+execute:
+  echo: false
+  warning: false
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+```{r}
+#| label: setup
+
 library(tidyverse)
 library(survey)
+library(gtsummary)
+
 ```
 
-## Introduction {#sec-intro}
+```{r}
+#| label: read_data
+#| include: false
 
-Asthma patients can have an increase risk of diagnosis of chronic obstructive pulmonary disease (COPD). Other risk factors accelerating time-to-COPD diagnosis includes male sex, older adults (age > 40 years), history of tobacco smoking, asthma exacerbations, frequent emergency admissions, longer hospital stay, patients with increased burden of comorbidities, obese male sex, SABA overuse, moderate and severe asthma [@asamoah-boaheng_examining_2022].
+source(
+  file = here::here("r_code", "2_sample_explore.r")
+)
+
+source(
+  file = here::here("r_code", "3_run_model.r")
+)
+
+```
+
+
+<!-- ## Introduction {#sec-intro} -->
+
+<!-- Asthma patients can have an increase risk of diagnosis of chronic obstructive pulmonary disease (COPD). Other risk factors accelerating time-to-COPD diagnosis includes male sex, older adults (age > 40 years), history of tobacco smoking, asthma exacerbations, frequent emergency admissions, longer hospital stay, patients with increased burden of comorbidities, obese male sex, SABA overuse, moderate and severe asthma [@asamoah-boaheng_examining_2022]. -->
 
 
 ## Methods {#sec-methods}
 
 ### Study populations {#ssec-population}
 
+This study includes respondents from non-institutionalized United States (US) civilian adults aged 20-80 years with asthma, in all 50 states and Washington D.C. The data for the study was extracted from the National Health and Nutrition Examination Survey (NHANES). NHANES collects data through interviews and physical examinations to study the health and nutritional status of adults and children in the US. NHANES has a publicly available database released by the National Center for Health Statistics (NCHS) [@chen_national_2020; @akinbam_national_2022].
+
+To increase the sample size two data cycles were combined for this analysis. NHANES releases public data in two-year cycles, but the 2019-2020 cycle was not completed due to the coronavirus (COVID-19) pandemic. Therefore data collected from 2019 to March 2020 (pre-pandemic) were combined with NHANES 2017-2018 to get a nationally representative sample [@akinbam_national_2022]. The 2017-2020 pre-pandemic and 2015-2016 cycles were used for this study for a total of $5.2$ years.
+
+**ADD SAMPLE SIZES**. The sample sizes for the study is shown in @fig-flowchart.
+
+![Flowchart of the study population and sample size for the analysis.](../figures/sample_sizes_flowchart.png){#fig-flowchart width=40%}
 
 
 ### Study variables {#ssec-variables}
 
+The outcome of the study is if the participants have been diagnosed with Chronic obstructive pulmonary disease (COPD). For this information questions "Have you ever been told by a doctor or other health professional that you had chronic obstructive pulmonary disease or COPD, emphysema, or chronic bronchitis?" in the 2017-March 2020 cycle and the individual questions for emphysema, chronic bronchitis, and COPD in the 2015-2016 cycles were used. Participants who responded "Yes" to either one of the 3 diseases in the 2015-2016 data were coded as "Yes". Respondents who responded "No" to all diseases were coded as "No". 
+
+The primary exposure of interest is the respondents access to health insurance. This was obtained through the question "Are you covered by health insurance or some other kind of health care plan?".
+
+Confounders used in this analysis were selected based on the literature. These include the number of times the respondent received healthcare over past year (healthcare use), lung cancer, smoking status, number of smokers inside the home, and diabetes. *Healthcare use* was taken from the question "During the past 12 months, how many times have you seen a doctor or other health care professional about your health at a doctor's office, a clinic or some other place?". 
+
+*Lung cancer* was defined from the set of questions for "What kind of cancer?". If the respondents selected lung cancer for any one of the corresponding variables they were considered to be diagnosed with lung cancer. If participants said "No" to to the question "Have you ever been told by a doctor or other health professional that you had cancer or a malignancy of any kind?", they are defined as not having lung cancer. 
+
+*Smoking status* was defined from questions "Do you now smoke cigarettes?" and "Have you smoked at least 100 cigarettes in your entire life?". If the respondents smoke every day or some days they are considered "current smokers". If the respondents are not smoking now but have smoked more than 100 cigarettes, they are considered as "former smokers". If they haven't smoked 100 cigarettes throughout life, they are considered "never smoked". *Number of smokers inside the home* was directly obtained through the question "Not counting decks, porches, or detached garages, how many people who live here smoke cigarettes, cigars, little cigars, pipes, water pipes, hookah, or any other tobacco product inside this home?".
+
+Sex and age, in years, at the time of screening were used as other covariates in this analysis. For all above mentioned variables if the respondents answered "Refused" or "Don't know", the response was considered missing.
 
 
 ### Statistical analyses {#ssec-analyses}
 
+NHANES uses a four-stage clustered sampling design and provides sampling weights for each respondent after accounting for the said sampling design and oversampling criteria [@chen_national_2020; @akinbam_national_2022]. To account for this complex sampling design, survey weights were used. Since multiple cycles were combined sample weights should be adjusted accordingly. Guidelines specify multiplying 2015-2016 weights by $\frac{2}{5.2}$ and 2017-March 2020 weights by $\frac{3.2}{5.2}$. All variables used in this study were collected through the household questionnaire. Therefore interview weights were used in this analysis [@akinbam_national_2022].
+
+Descriptive statistics were obtained with design adjusted medians, 1st and 3rd quartiles for numerical variables and design adjusted percentages for categorical variables. Missing values with percentages less than $5\%$ were imputed using multiple imputation based on Fully Conditional Specification (FCS) [@buuren_mice_2011]. FCS was used in this data assuming that data are missing at random (MAR) [@liu_multiple_2015]. Predictive mean matching was used when imputing missing numeric variables, logistic regression imputation for dichotomous variables and polytomous regression imputation for categorical data with more than 2 levels.
+
+Odds ratios (OR) were obtained using a logistic regression model while adjusting for variables healthcare use, lung cancer, smoking status, number of smokers inside the home, and diabetes. 
+
+All analysis were conducted using R version 4.3.1 [@r_core_team_r_2023]. Data manipulation was done using the `dplyr` package [@wickham_dplyr_2023] and complex survey design features were incorporated using the `survey` package [@lumley_complex_2010]. Multiple imputation was performed using the `mice` package [@buuren_mice_2011].
+
 
 ## Results {#sec-results}
 
+```{r}
+#| label: table_one
+#| tbl-cap: Characteristics of the participants by COPD status. All proportions adjusted for the survey design.
 
+as_gt(
+  tab_1_weighted
+)
+
+```
+
+```{r}
+#| label: base_model
+#| tbl-cap: Adjusted odds ratios. All proportions adjusted for the survey design.
+
+as_gt(
+  result_mod_base
+)
+
+```
+
+
+<!-- ## Discussion {#sec-discussion} -->
+
+<!-- Add discussion -->
+
+
+### References
+
+::: {#refs}
+:::
+
+
+## Appendix {.appendix}
+
+Add appendix
