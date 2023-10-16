@@ -397,6 +397,9 @@ dat_15 <- dat_15_demographic %>%
   full_join(
     dat_15_smoking,
     by = "subject_id"
+  ) %>% 
+  mutate(
+    interview_wt_adj = 2*interview_wt/5.2
   )
 
 dat_17 <- dat_17_demographic %>% 
