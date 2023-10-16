@@ -140,7 +140,7 @@ dat_17_demographic <- dat_17_demographic_raw %>%
 ##    * MCQ160p (2017-2020) or MCQ160G/MCQ160K/MCQ160O (2015-2016) - Ever told you had COPD, emphysema, ChB (outcome)
 ##    * MCQ300B - Close relative had asthma?
 ##    * MCQ050 - Emergency care visit for asthma/past yr (for exposure)
-##    * MCQ230A/MCQ230B/MCQ230C/MCQ230D - What kind of cancer
+##    * MCQ220 & MCQ230A/MCQ230B/MCQ230C/MCQ230D - What kind of cancer
 dat_15_medical_conditions <- dat_15_medical_conditions_raw %>% 
   select(
     subject_id = SEQN,
@@ -148,6 +148,7 @@ dat_15_medical_conditions <- dat_15_medical_conditions_raw %>%
     copd_1 = MCQ160G, copd_2 = MCQ160K, copd_3 = MCQ160O,
     relative_asthma = MCQ300B,
     asthma_ed_visits_year = MCQ050,
+    cancer_diagnosis = MCQ220,
     cancer_type_1 = MCQ230A, cancer_type_2 = MCQ230B, cancer_type_3 = MCQ230C, cancer_type_4 = MCQ230D
   ) %>% 
   mutate(
@@ -163,10 +164,10 @@ dat_15_medical_conditions <- dat_15_medical_conditions_raw %>%
       relative_asthma == 1 ~ "Yes",
       relative_asthma == 2 ~ "No"
     ), 
-    lung_cancer = miscr::fct_case_when(
+    lung_cancer = miscr::fct_case_when( ## Refused and don't know as NA
       cancer_type_1 == 23 | cancer_type_2 == 23 | cancer_type_3 == 23 | cancer_type_4 == 23 ~ "Yes", ## There are no lung cancers in 3 and 4, but added here for completeness
-      cancer_type_1 %in% c(77, 99, NA) & cancer_type_2 %in% c(77, 99, NA) & cancer_type_3 %in% c(77, 99, NA) & cancer_type_4 %in% c(77, 99, NA) ~ NA_character_,
-      TRUE ~ "No"
+      cancer_diagnosis == 2 | !cancer_type_1 %in% c(23, 77, 99, NA) | !cancer_type_2 %in% c(23, 77, 99, NA) | !cancer_type_3 %in% c(23, 77, 99, NA) | !cancer_type_4 %in% c(23, 77, 99, NA) ~ "No",
+      cancer_type_1 %in% c(77, 99, NA) & cancer_type_2 %in% c(77, 99, NA) & cancer_type_3 %in% c(77, 99, NA) & cancer_type_4 %in% c(77, 99, NA) ~ NA_character_
     ),
     asthma_ed_visits_year = miscr::fct_case_when( ## Refused and don't know as NA
       asthma_ed_visits_year == 1 ~ "Yes",
@@ -182,6 +183,7 @@ dat_17_medical_conditions <- dat_17_medical_conditions_raw %>%
     copd_or_others = MCQ160P,
     relative_asthma = MCQ300B,
     asthma_ed_visits_year = MCQ050,
+    cancer_diagnosis = MCQ220,
     cancer_type_1 = MCQ230A, cancer_type_2 = MCQ230B, cancer_type_3 = MCQ230C, cancer_type_4 = MCQ230D
   ) %>% 
   mutate(
@@ -197,10 +199,10 @@ dat_17_medical_conditions <- dat_17_medical_conditions_raw %>%
       relative_asthma == 1 ~ "Yes",
       relative_asthma == 2 ~ "No"
     ), 
-    lung_cancer = miscr::fct_case_when(
+    lung_cancer = miscr::fct_case_when( ## Refused and don't know as NA
       cancer_type_1 == 23 | cancer_type_2 == 23 | cancer_type_3 == 23 | cancer_type_4 == 23 ~ "Yes", ## There are no lung cancers in 3 and 4, but added here for completeness
-      cancer_type_1 %in% c(77, 99, NA) & cancer_type_2 %in% c(77, 99, NA) & cancer_type_3 %in% c(77, 99, NA) & cancer_type_4 %in% c(77, 99, NA) ~ NA_character_,
-      TRUE ~ "No"
+      cancer_diagnosis == 2 | !cancer_type_1 %in% c(23, 77, 99, NA) | !cancer_type_2 %in% c(23, 77, 99, NA) | !cancer_type_3 %in% c(23, 77, 99, NA) | !cancer_type_4 %in% c(23, 77, 99, NA) ~ "No",
+      cancer_type_1 %in% c(77, 99, NA) & cancer_type_2 %in% c(77, 99, NA) & cancer_type_3 %in% c(77, 99, NA) & cancer_type_4 %in% c(77, 99, NA) ~ NA_character_
     ),
     asthma_ed_visits_year = miscr::fct_case_when( ## Refused and don't know as NA
       asthma_ed_visits_year == 1 ~ "Yes",
@@ -213,35 +215,43 @@ dat_17_medical_conditions <- dat_17_medical_conditions_raw %>%
 ### Access to care ####
 ## Variables needed:
 ##    * SEQN - Respondent sequence number
-##    * HUD062 (2017-2020) or HUQ061 (2015-2016) - How long since last healthcare visit
+##    * HUQ051 - # times receive healthcare over past year
 
 dat_15_access_to_care <- dat_15_access_to_care_raw %>% 
   select(
     subject_id = SEQN,
-    last_health_visit = HUQ061
+    n_times_healthcare_visit = HUQ051
   ) %>% 
   mutate(
-    last_health_visit = fct_case_when( ## Refused and don't know as NA
-      last_health_visit == 6 ~ "Never",
-      last_health_visit %in% c(1, 2) ~ "< 12 months",
-      last_health_visit == 3 ~ "1 - < 2 years",
-      last_health_visit == 4 ~ "2 - < 5 years",
-      last_health_visit == 5 ~ "More than 5 years ago"
+    health_care = fct_case_when( ## Refused and don't know as NA
+      n_times_healthcare_visit == 0 ~ "None",
+      n_times_healthcare_visit == 1 ~ "1",
+      n_times_healthcare_visit == 2 ~ "2 to 3",
+      n_times_healthcare_visit == 3 ~ "4 to 5",
+      n_times_healthcare_visit == 4 ~ "6 to 7",
+      n_times_healthcare_visit == 5 ~ "8 to 9",
+      n_times_healthcare_visit == 6 ~ "10 to 12",
+      n_times_healthcare_visit == 7 ~ "13 to 15",
+      n_times_healthcare_visit == 8 ~ "16 or more"
     )
   )
 
 dat_17_access_to_care <- dat_17_access_to_care_raw %>% 
   select(
     subject_id = SEQN,
-    last_health_visit = HUD062
+    n_times_healthcare_visit = HUQ051
   ) %>% 
   mutate(
-    last_health_visit = fct_case_when( ## Refused and don't know as NA
-      last_health_visit == 0 ~ "Never",
-      last_health_visit == 1 ~ "< 12 months",
-      last_health_visit == 2 ~ "1 - < 2 years",
-      last_health_visit == 3 ~ "2 - < 5 years",
-      last_health_visit == 4 ~ "More than 5 years ago"
+    health_care = fct_case_when( ## Refused and don't know as NA
+      n_times_healthcare_visit == 0 ~ "None",
+      n_times_healthcare_visit == 1 ~ "1",
+      n_times_healthcare_visit == 2 ~ "2 to 3",
+      n_times_healthcare_visit == 3 ~ "4 to 5",
+      n_times_healthcare_visit == 4 ~ "6 to 7",
+      n_times_healthcare_visit == 5 ~ "8 to 9",
+      n_times_healthcare_visit == 6 ~ "10 to 12",
+      n_times_healthcare_visit == 7 ~ "13 to 15",
+      n_times_healthcare_visit == 8 ~ "16 or more"
     )
   )
 
@@ -280,13 +290,15 @@ dat_17_insurance <- dat_17_insurance_raw %>%
 ## Variables needed:
 ##    * SEQN - Respondent sequence number
 ##    * SMQ020 - Smoked at least 100 cigarettes in life (from cigarette use)
+##    * SMQ040 - Do you now smoke cigarettes?
 ##    * SMD470 - # of people who smoke inside this home? (from household smokers)
 
 dat_15_smoking <- full_join(
   dat_15_smoking_raw %>% 
     select(
       subject_id = SEQN,
-      smoked_100_life = SMQ020
+      smoked_100_life = SMQ020,
+      smoking_now = SMQ040
     ),
   dat_15_smoking_household_raw %>% 
     select(
@@ -296,21 +308,24 @@ dat_15_smoking <- full_join(
   by = "subject_id"
 ) %>% 
   mutate(
-    smoked_100_life = fct_case_when( ## Refused and don't know as NA
-      smoked_100_life == 1 ~ "Yes",
-      smoked_100_life == 2 ~ "No"
+    smoking_status = fct_case_when( ## Refused and don't know as NA
+      smoking_now %in% c(1, 2) ~ "Current smokers",
+      smoked_100_life == 1 & smoking_now == 3 ~ "Former smokers",
+      smoked_100_life == 2 ~ "Never smoked"
     ),
     num_smoke_inside = case_when(
       num_smoke_inside %in% c(777, 999) ~ NA_integer_, ## Refused and don't know as NA
       TRUE ~ as.integer(num_smoke_inside)
-    )
+    ),
+    .keep = "unused"
   )
 
 dat_17_smoking <- full_join(
   dat_17_smoking_raw %>% 
     select(
       subject_id = SEQN,
-      smoked_100_life = SMQ020
+      smoked_100_life = SMQ020,
+      smoking_now = SMQ040
     ),
   dat_17_smoking_household_raw %>% 
     select(
@@ -320,9 +335,10 @@ dat_17_smoking <- full_join(
   by = "subject_id"
 ) %>% 
   mutate(
-    smoked_100_life = fct_case_when( ## Refused and don't know as NA
-      smoked_100_life == 1 ~ "Yes",
-      smoked_100_life == 2 ~ "No"
+    smoking_status = fct_case_when( ## Refused and don't know as NA
+      smoking_now %in% c(1, 2) ~ "Current smokers",
+      smoked_100_life == 1 & smoking_now == 3 ~ "Former smokers",
+      smoked_100_life == 2 ~ "Never smoked"
     ),
     num_smoke_inside = case_when(
       num_smoke_inside %in% c(777, 999) ~ NA_integer_, ## Refused and don't know as NA
