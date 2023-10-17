@@ -33,15 +33,6 @@ execute:
 ---
 
 ```{r}
-#| label: setup
-
-library(tidyverse)
-library(survey)
-library(gtsummary)
-
-```
-
-```{r}
 #| label: read_data
 #| include: false
 
@@ -56,6 +47,13 @@ source(
 ```
 
 
+```{r}
+#| label: libraries
+
+
+
+```
+
 <!-- ## Introduction {#sec-intro} -->
 
 <!-- Asthma patients can have an increase risk of diagnosis of chronic obstructive pulmonary disease (COPD). Other risk factors accelerating time-to-COPD diagnosis includes male sex, older adults (age > 40 years), history of tobacco smoking, asthma exacerbations, frequent emergency admissions, longer hospital stay, patients with increased burden of comorbidities, obese male sex, SABA overuse, moderate and severe asthma [@asamoah-boaheng_examining_2022]. -->
@@ -63,13 +61,67 @@ source(
 
 ## Methods {#sec-methods}
 
+```{r}
+#| label: sample_counts
+
+n_full_cycles <- dat_full %>% 
+  count(
+    cycle
+  )
+
+n_15_16 <- n_full_cycles %>% 
+  filter(
+    cycle == 9
+  ) %>% 
+  pull(
+    n
+  )
+
+n_17_20 <- n_full_cycles %>% 
+  filter(
+    cycle == 66
+  ) %>% 
+  pull(
+    n
+  )
+
+n_non_asthma <- dat_full %>% 
+  count(
+    asthma_inclusion
+  ) %>% 
+  summarise(
+    n = sum(n[is.na(asthma_inclusion) | !asthma_inclusion])
+  ) %>% 
+  pull(
+    n
+  )
+
+n_age_excluded <- dat_full %>% 
+  mutate(
+    age_exclusion = asthma_inclusion & !age_inclusion
+  ) %>% 
+  count(
+    age_exclusion
+  ) %>% 
+  filter(
+    age_exclusion
+  ) %>% 
+  pull(
+    n
+  )
+
+n_analytic_sample <- nrow(dat_analytic)
+
+```
+
+
 ### Study populations {#ssec-population}
 
 This study includes respondents from non-institutionalized United States (US) civilian adults aged 20-80 years with asthma, in all 50 states and Washington D.C. The data for the study was extracted from the National Health and Nutrition Examination Survey (NHANES). NHANES collects data through interviews and physical examinations to study the health and nutritional status of adults and children in the US. NHANES has a publicly available database released by the National Center for Health Statistics (NCHS) [@chen_national_2020; @akinbam_national_2022].
 
 To increase the sample size two data cycles were combined for this analysis. NHANES releases public data in two-year cycles, but the 2019-2020 cycle was not completed due to the coronavirus (COVID-19) pandemic. Therefore data collected from 2019 to March 2020 (pre-pandemic) were combined with NHANES 2017-2018 to get a nationally representative sample [@akinbam_national_2022]. The 2017-2020 pre-pandemic and 2015-2016 cycles were used for this study for a total of $5.2$ years.
 
-**ADD SAMPLE SIZES**. The sample sizes for the study is shown in @fig-flowchart.
+There are $`r format(n_15_16, big.mark = ",", trim = TRUE)`$ records (respondents) in the 2015-2016 cycle and $`r format(n_17_20, big.mark = ",", trim = TRUE)`$ in the 2017-March 2020 cycle. Therefore the full dataset contains $`r format(n_15_16 + n_17_20, big.mark = ",", trim = TRUE)`$ records. From the full data $`r format(n_non_asthma, big.mark = ",", trim = TRUE)`$ non-asthma patient records were excluded. Further $`r format(n_age_excluded, big.mark = ",", trim = TRUE)`$ respondents younger than $20$ years old and older than $80$ years, were removed. Missing values for the exposure and outcome were defined as exclusion criteria. The final sample included respondents $`r format(n_analytic_sample, big.mark = ",", trim = TRUE)`$ (see @fig-flowchart).
 
 ![Flowchart of the study population and sample size for the analysis.](../figures/sample_sizes_flowchart.png){#fig-flowchart width=40%}
 
@@ -82,7 +134,7 @@ The primary exposure of interest is the respondents access to health insurance. 
 
 Confounders used in this analysis were selected based on the literature. These include the number of times the respondent received healthcare over past year (healthcare use), lung cancer, smoking status, number of smokers inside the home, and diabetes. *Healthcare use* was taken from the question "During the past 12 months, how many times have you seen a doctor or other health care professional about your health at a doctor's office, a clinic or some other place?". 
 
-*Lung cancer* was defined from the set of questions for "What kind of cancer?". If the respondents selected lung cancer for any one of the corresponding variables they were considered to be diagnosed with lung cancer. If participants said "No" to to the question "Have you ever been told by a doctor or other health professional that you had cancer or a malignancy of any kind?", they are defined as not having lung cancer. 
+*Lung cancer* was defined from the set of questions for "What kind of cancer?". If the respondents selected lung cancer for any one of the corresponding variables they were considered to be diagnosed with lung cancer. If participants said "No" to the question "Have you ever been told by a doctor or other health professional that you had cancer or a malignancy of any kind?", they are defined as not having lung cancer. 
 
 *Smoking status* was defined from questions "Do you now smoke cigarettes?" and "Have you smoked at least 100 cigarettes in your entire life?". If the respondents smoke every day or some days they are considered "current smokers". If the respondents are not smoking now but have smoked more than 100 cigarettes, they are considered as "former smokers". If they haven't smoked 100 cigarettes throughout life, they are considered "never smoked". *Number of smokers inside the home* was directly obtained through the question "Not counting decks, porches, or detached garages, how many people who live here smoke cigarettes, cigars, little cigars, pipes, water pipes, hookah, or any other tobacco product inside this home?".
 
