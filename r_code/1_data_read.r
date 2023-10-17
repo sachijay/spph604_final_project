@@ -458,7 +458,20 @@ dat_analytic <- dat_full %>% ## 25,531 records
     exposure_na_inclusion, ## 2,164 records remaining
     response_na_inclusion ## 2,154 records remaining
   ) %>%
-  droplevels.data.frame()
+  droplevels.data.frame() %>% 
+  labelled::set_variable_labels(
+    copd_or_others = "Have/Had COPD",
+    has_insurance = "Has insurance",
+    age_years = "Age (years)",
+    sex = "Sex",
+    relative_asthma = "Close relative with asthma",
+    asthma_ed_visits_year = "ED visits for asthma/past yr",
+    n_times_healthcare_visit = "No. of healthcare visits",
+    lung_cancer = "Lung cancer",
+    smoking_status = "Smoking status",
+    num_smoke_inside = "No. of people who smoke inside",
+    have_diabetes = "Has diabetes"
+  )
 
 
 ## Define the survey design ####
