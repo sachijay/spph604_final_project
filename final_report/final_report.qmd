@@ -15,7 +15,7 @@ format:
       - heightrounded
 date: last-modified
 author:
-  - name: Pramoda Jayasinghe
+  - name: Mango Tango - PJ
     affiliations:
       - name: The University of British Columbia
         department: School of population and public health
@@ -58,6 +58,7 @@ source(
 
 <!-- Asthma patients can have an increase risk of diagnosis of chronic obstructive pulmonary disease (COPD). Other risk factors accelerating time-to-COPD diagnosis includes male sex, older adults (age > 40 years), history of tobacco smoking, asthma exacerbations, frequent emergency admissions, longer hospital stay, patients with increased burden of comorbidities, obese male sex, SABA overuse, moderate and severe asthma [@asamoah-boaheng_examining_2022]. -->
 
+**Total word count: XX**
 
 # Methods (XX words) {#sec-methods}
 
@@ -124,7 +125,7 @@ n_complete_data <- model_base_unweighted$data %>%
 
 ## Study populations {#sec-population}
 
-This study includes respondents from non-institutionalized United States (US) civilian adults aged 20-80 years with asthma, in all 50 states and Washington D.C. The data for the study was extracted from the National Health and Nutrition Examination Survey (NHANES). NHANES collects data through interviews and physical examinations to study the health and nutritional status of adults and children in the US. NHANES has a publicly available database released by the National Center for Health Statistics (NCHS) [@chen_national_2020; @akinbam_national_2022].
+This study includes respondents from non-institutionalized United States (US) civilian adults aged 20-80 years with asthma, in all 50 states and Washington D.C. The data for the study was extracted from the National Health and Nutrition Examination Survey (NHANES). NHANES collects data through interviews and physical examinations to study the health and nutritional status of adults and children in the US. NHANES has a publicly available database released by the National Center for Health Statistics (NCHS) [@chen_national_2020; @akinbam_national_2022]. NHANES uses a four-stage clustered sampling design and produces a nationally representative sample.
 
 To increase the sample size two data cycles were combined for this analysis. NHANES releases public data in two-year cycles, but the 2019-2020 cycle was not completed due to the coronavirus (COVID-19) pandemic. Therefore data collected from 2019 to March 2020 (pre-pandemic) were combined with NHANES 2017-2018 to get a nationally representative sample [@akinbam_national_2022]. The 2017-2020 pre-pandemic and 2015-2016 cycles were used for this study for a total of $5.2$ years.
 
@@ -135,33 +136,33 @@ There are $`r miscr:::format_number(n_15_16, .output_digits = 0)`$ records (resp
 
 ## Study variables {#sec-variables}
 
-The outcome of the study is if the participants have been diagnosed with Chronic obstructive pulmonary disease (COPD). For this information questions "Have you ever been told by a doctor or other health professional that you had chronic obstructive pulmonary disease or COPD, emphysema, or chronic bronchitis?" in the 2017-March 2020 cycle and the individual questions for emphysema, chronic bronchitis, and COPD in the 2015-2016 cycles were used. Participants who responded "Yes" to either one of the 3 diseases in the 2015-2016 data were coded as "Yes". Respondents who responded "No" to all diseases were coded as "No". 
+The outcome of the study is if the participants have been diagnosed with Chronic obstructive pulmonary disease (COPD). The outcome is based on questions "*Have you ever been told by a doctor or other health professional that you had chronic obstructive pulmonary disease or COPD, emphysema, or chronic bronchitis?*" in the 2017-March 2020 cycle and the individual questions for emphysema, chronic bronchitis, and COPD in the 2015-2016 cycles were used. Participants who responded "Yes" to either one of the 3 diseases in the 2015-2016 data were coded as "Yes". Respondents who responded "No" to all diseases were coded as "No". 
 
-The primary exposure of interest is the respondents access to health insurance. This was obtained through the question "Are you covered by health insurance or some other kind of health care plan?".
+The primary exposure of interest is the respondents access to health insurance. This was obtained through the question "*Are you covered by health insurance or some other kind of health care plan?*" as a dichotomous outcome.
 
-Confounders used in this analysis were selected based on the literature. These include the number of times the respondent received healthcare over past year (healthcare use), lung cancer, smoking status, number of smokers inside the home, and diabetes. *Healthcare use* was taken from the question "During the past 12 months, how many times have you seen a doctor or other health care professional about your health at a doctor's office, a clinic or some other place?". 
+Confounders used in this analysis were selected based on the literature. These include the number of times the respondent received healthcare over past year (healthcare use), lung cancer, smoking status, number of smokers inside the home, and diabetes. **Healthcare use** was taken from the question "*During the past 12 months, how many times have you seen a doctor or other health care professional about your health at a doctor's office, a clinic or some other place?*". 
 
-*Lung cancer* was defined from the set of questions for "What kind of cancer?". If the respondents selected lung cancer for any one of the corresponding variables they were considered to be diagnosed with lung cancer. If participants said "No" to the question "Have you ever been told by a doctor or other health professional that you had cancer or a malignancy of any kind?", they are defined as not having lung cancer. 
+**Lung cancer** was defined from the set of questions for "*What kind of cancer?*". If the respondents selected lung cancer for any one of the corresponding variables they were considered to be diagnosed with lung cancer. If participants said "No" to the question, "*Have you ever been told by a doctor or other health professional that you had cancer or a malignancy of any kind?*", they are defined as not having lung cancer. 
 
-*Smoking status* was defined from questions "Do you now smoke cigarettes?" and "Have you smoked at least 100 cigarettes in your entire life?". If the respondents smoke every day or some days they are considered "current smokers". If the respondents are not smoking now but have smoked more than 100 cigarettes, they are considered as "former smokers". If they haven't smoked 100 cigarettes throughout life, they are considered "never smoked". *Number of smokers inside the home* was directly obtained through the question "Not counting decks, porches, or detached garages, how many people who live here smoke cigarettes, cigars, little cigars, pipes, water pipes, hookah, or any other tobacco product inside this home?".
+**Smoking status** was defined from questions "*Do you now smoke cigarettes?*" and "*Have you smoked at least 100 cigarettes in your entire life?*". If the respondents smoke every day or some days they are considered "current smokers". If the respondents are not smoking now but have smoked more than 100 cigarettes, they are considered as "former smokers". If they haven't smoked 100 cigarettes throughout life, they are considered "never smoked". **Number of smokers inside the home** was directly obtained through the question "*Not counting decks, porches, or detached garages, how many people who live here smoke cigarettes, cigars, little cigars, pipes, water pipes, hookah, or any other tobacco product inside this home?*".
 
 Sex and age, in years, at the time of screening were used as other covariates in this analysis. For all above mentioned variables if the respondents answered "Refused" or "Don't know", the response was considered missing.
 
 
 ## Statistical analyses {#sec-analyses}
 
-NHANES uses a four-stage clustered sampling design and provides sampling weights for each respondent after accounting for the said sampling design and oversampling criteria [@chen_national_2020; @akinbam_national_2022]. To account for this complex sampling design, survey weights were used. Since multiple cycles were combined sample weights should be adjusted accordingly. Guidelines specify multiplying 2015-2016 weights by $\frac{2}{5.2}$ and 2017-March 2020 weights by $\frac{3.2}{5.2}$. All variables used in this study were collected through the household questionnaire. Therefore interview weights were used in this analysis [@akinbam_national_2022].
+NHANES provides sampling weights for each respondent after accounting for the complex sampling design and oversampling criteria [@chen_national_2020; @akinbam_national_2022]. For the analysis to be representative of the population, survey weights were used. Since multiple cycles were combined sample weights should be adjusted accordingly. Guidelines specify multiplying 2015-2016 weights by $\frac{2}{5.2}$ and 2017-March 2020 weights by $\frac{3.2}{5.2}$. All variables used in this study were collected through the household questionnaire. Therefore interview weights were used in this analysis [@akinbam_national_2022].
 
-Descriptive statistics were obtained with design adjusted medians, 1st and 3rd quartiles for numerical variables and design adjusted percentages for categorical variables. Odds ratios (OR) were obtained using a logistic regression model while adjusting for variables healthcare use, lung cancer, smoking status, number of smokers inside the home, and diabetes.
+Descriptive statistics were obtained with design adjusted medians, 1st and 3rd quartiles for numerical variables and design adjusted percentages for categorical variables. Crude and adjusted odds ratios (OR) were obtained using a logistic regression model. Adjustment variables used in this study are healthcare use, smoking status, number of smokers inside the home, and diabetes. $95\%$ confidence intervals (CI) and two-sided p-values based on the Student t distribution are obtained [@r_core_team_r_2023].
 
-Missing values were imputed using multiple imputation (MI) based on Fully Conditional Specification (FCS) [@buuren_mice_2011]. FCS was used in this data assuming that data are missing at random (MAR) [@liu_multiple_2015]. Predictive mean matching was used when imputing missing numeric variables, logistic regression imputation for dichotomous variables and polytomous regression imputation for categorical data with more than 2 levels.
+Missing values will be imputed using multiple imputation (MI) based on Fully Conditional Specification (FCS) [@buuren_mice_2011]. FCS will be used in this data assuming that data are missing at random (MAR) [@liu_multiple_2015]. Predictive mean matching will be used when imputing missing numeric variables, logistic regression imputation for dichotomous variables and polytomous regression imputation for categorical data with more than 2 levels.
 
 All analysis were conducted using R version 4.3.1 [@r_core_team_r_2023]. Data manipulation was done using the `dplyr` package [@wickham_dplyr_2023] and complex survey design features were incorporated using the `survey` package [@lumley_complex_2010]. Multiple imputation was performed using the `mice` package [@buuren_mice_2011].
 
 
 # Results (XX words) {#sec-results}
 
-Variables used used in this study, grouped by levels of the outcome, are summarized in @tbl-tableone accounting for the complex survey design. Respondents with diagnosed COPD are older (with a median age of $57$) than respondents without COPD (median age $39$). There are approximately $50\%$ males and females without COPD while more females in the sample are diagnosed with COPD. The median number of healthcare visits in the past year is similar between the two response groups. The proportion of lung cancer among respondents in this sample is close to zero ($2\%$ in the COPD group and almost $0\%$ in the non-COPD group). Conforming to what was observed in the literature, there are more current and former smokers with COPD and more respondents who have never smoked in the non-COPD group. There are more respondents with diabetes in the COPD group ($24\%$) compared to the non-COPD group ($10\%$).
+Variables used used in this study, grouped by levels of the outcome, are summarized in @tbl-tableone accounting for the complex survey design. Respondents with diagnosed COPD are older (with a median age of $57$) than respondents without COPD (median age $39$). There are approximately $50\%$ males and females without COPD while more females in the sample are diagnosed with COPD. The median number of healthcare visits in the past year is similar between the two response groups. The proportion of lung cancer among respondents in this sample is close to zero ($2\%$ in the COPD group and almost $0\%$ in the non-COPD group). There are more current and former smokers with COPD and more respondents who have never smoked in the non-COPD group. There are more respondents with diabetes in the COPD group ($24\%$) compared to the non-COPD group ($10\%$).
 
 Majority of the respondents didn't answer the number smokers inside the house, with $52\%$ missing in the COPD group and $72\%$ in the non-COPD group.
 
@@ -184,9 +185,9 @@ crude_or_ci <- exp(confint(model_base_crude)[2, ])
 
 ```
 
-Unadjusted OR for the outcome (COPD) and exposure (insurance status) was calculated for the complete data, containing $`r miscr:::format_number(n_complete_data, .output_digits = 0)`$ records. The OR was $`r miscr:::format_number(crude_or, .output_digits = 2)`$ with a confidence interval of ($`r miscr:::format_number(crude_or_ci[1], .output_digits = 2)`$, $`r miscr:::format_number(crude_or_ci[2], .output_digits = 2)`$). Therefore, the odds of being diagnosed with COPD is $1.6$ times higher in US adults without health insurance, compared to US adults with health insurance.
+Crude OR for the outcome (COPD) and exposure (insurance status) was calculated for the complete data, containing $`r miscr:::format_number(n_complete_data, .output_digits = 0)`$ records. The OR was $`r miscr:::format_number(crude_or, .output_digits = 2)`$ with a $95\%$ confidence interval of ($`r miscr:::format_number(crude_or_ci[1], .output_digits = 2)`$, $`r miscr:::format_number(crude_or_ci[2], .output_digits = 2)`$). Therefore, the odds of being diagnosed with COPD is $1.6$ times higher in US adults without health insurance, compared to US adults with health insurance.
 
-OR from the logistic regression model for the complete data are shown in @tbl-base_model-complete. Lung cancer is included in the model, despite having proportions with the disease close to zero, to avoid misspecification of the model. But the OR for lung cancer produced by the regression model is ignored. After adjusting for the confounders and other variables, the OR ($1.08$) shows that there is no significant difference (p-value = $0.80$) in the odds of being diagnosed with COPD between US adults with or without health insurance.
+Adjusted OR from the logistic regression model for the complete data are shown in @tbl-base_model-complete. The number of respondents with lung cancer are near zero (@tbl-tableone). Therefore lung cancer is not used for OR adjustment. After adjusting for the confounders and other variables, the OR ($1.08$) shows that there is no significant difference (p-value = $0.80$) in the odds of being diagnosed with COPD between US adults with or without health insurance.
 
 ```{r}
 #| label: tbl-base_model-complete
@@ -227,13 +228,13 @@ The reported OR uses the complete data with no missing values. This approach mig
 <!-- Add discussion -->
 
 
-### References
+# References
 
 ::: {#refs}
 :::
 
 
-## Appendix {.appendix}
+# Appendix {.appendix}
 
 ```{r}
 #| label: tbl-tableone_unweighted
