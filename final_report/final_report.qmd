@@ -4,7 +4,7 @@ format:
   pdf:
     documentclass: article
     keep-tex: false
-    number-sections: false
+    number-sections: true
     colorlinks: false
     fig-cap-location: bottom
     tbl-cap-location: top
@@ -59,7 +59,7 @@ source(
 <!-- Asthma patients can have an increase risk of diagnosis of chronic obstructive pulmonary disease (COPD). Other risk factors accelerating time-to-COPD diagnosis includes male sex, older adults (age > 40 years), history of tobacco smoking, asthma exacerbations, frequent emergency admissions, longer hospital stay, patients with increased burden of comorbidities, obese male sex, SABA overuse, moderate and severe asthma [@asamoah-boaheng_examining_2022]. -->
 
 
-## Methods (XX words) {#sec-methods}
+# Methods (XX words) {#sec-methods}
 
 ```{r}
 #| label: sample_counts
@@ -122,7 +122,7 @@ n_complete_data <- model_base_unweighted$data %>%
 ```
 
 
-### Study populations {#ssec-population}
+## Study populations {#sec-population}
 
 This study includes respondents from non-institutionalized United States (US) civilian adults aged 20-80 years with asthma, in all 50 states and Washington D.C. The data for the study was extracted from the National Health and Nutrition Examination Survey (NHANES). NHANES collects data through interviews and physical examinations to study the health and nutritional status of adults and children in the US. NHANES has a publicly available database released by the National Center for Health Statistics (NCHS) [@chen_national_2020; @akinbam_national_2022].
 
@@ -133,7 +133,7 @@ There are $`r miscr:::format_number(n_15_16, .output_digits = 0)`$ records (resp
 ![Flowchart of the study population and sample size for the analysis.](../figures/sample_sizes_flowchart.png){#fig-flowchart width=40%}
 
 
-### Study variables {#ssec-variables}
+## Study variables {#sec-variables}
 
 The outcome of the study is if the participants have been diagnosed with Chronic obstructive pulmonary disease (COPD). For this information questions "Have you ever been told by a doctor or other health professional that you had chronic obstructive pulmonary disease or COPD, emphysema, or chronic bronchitis?" in the 2017-March 2020 cycle and the individual questions for emphysema, chronic bronchitis, and COPD in the 2015-2016 cycles were used. Participants who responded "Yes" to either one of the 3 diseases in the 2015-2016 data were coded as "Yes". Respondents who responded "No" to all diseases were coded as "No". 
 
@@ -148,7 +148,7 @@ Confounders used in this analysis were selected based on the literature. These i
 Sex and age, in years, at the time of screening were used as other covariates in this analysis. For all above mentioned variables if the respondents answered "Refused" or "Don't know", the response was considered missing.
 
 
-### Statistical analyses {#ssec-analyses}
+## Statistical analyses {#sec-analyses}
 
 NHANES uses a four-stage clustered sampling design and provides sampling weights for each respondent after accounting for the said sampling design and oversampling criteria [@chen_national_2020; @akinbam_national_2022]. To account for this complex sampling design, survey weights were used. Since multiple cycles were combined sample weights should be adjusted accordingly. Guidelines specify multiplying 2015-2016 weights by $\frac{2}{5.2}$ and 2017-March 2020 weights by $\frac{3.2}{5.2}$. All variables used in this study were collected through the household questionnaire. Therefore interview weights were used in this analysis [@akinbam_national_2022].
 
@@ -159,7 +159,7 @@ Missing values were imputed using multiple imputation (MI) based on Fully Condit
 All analysis were conducted using R version 4.3.1 [@r_core_team_r_2023]. Data manipulation was done using the `dplyr` package [@wickham_dplyr_2023] and complex survey design features were incorporated using the `survey` package [@lumley_complex_2010]. Multiple imputation was performed using the `mice` package [@buuren_mice_2011].
 
 
-## Results (XX words) {#sec-results}
+# Results (XX words) {#sec-results}
 
 Variables used used in this study, grouped by levels of the outcome, are summarized in @tbl-tableone accounting for the complex survey design. Respondents with diagnosed COPD are older (with a median age of $57$) than respondents without COPD (median age $39$). There are approximately $50\%$ males and females without COPD while more females in the sample are diagnosed with COPD. The median number of healthcare visits in the past year is similar between the two response groups. The proportion of lung cancer among respondents in this sample is close to zero ($2\%$ in the COPD group and almost $0\%$ in the non-COPD group). Conforming to what was observed in the literature, there are more current and former smokers with COPD and more respondents who have never smoked in the non-COPD group. There are more respondents with diabetes in the COPD group ($24\%$) compared to the non-COPD group ($10\%$).
 
@@ -199,12 +199,12 @@ as_gt(
 ```
 
 
-## Results in progress
+**Results in progress**
 
 The reported OR uses the complete data with no missing values. This approach might not be suitable since there is a variable with high missing values. Therefore, multiple imputation would be used in the future submission to impute missing data. A sensitivity analysis will be carried out with the "duration since last healthcare visit" replacing the number of visits, already included in the model.
 
 
-## PICOT
+**PICOT**
 
 |    | Description                                                                                                            |
 |:--:|:-----------------------------------------------------------------------------------------------------------------------|
@@ -215,12 +215,12 @@ The reported OR uses the complete data with no missing values. This approach mig
 | T  | NHANES 2015-March 2020 (pre-pandemic)                                                                                  |
 
 
-## Changes since the SAP
+**Changes since the SAP**
 
 * The population was changed with people 80 years and older removed. This was done because NHANES reports 80 and above as 80.  
 * The variable "close relatives with asthma" was removed following reviewer feedback.  
 * "Frequency of healthcare visits" (`HUQ051`) was considered in the base case instead of "duration since last healthcare visit", following reviewer feedback. The duration will still be used in the sensitivity analysis.  
-* `SMQ040` ("Do you now smoke cigarettes?") was combined with `SMQ020` ("Smoked at least 100 cigarettes in life") to define smoking status. The new definition is mentioned in @ssec-variables.
+* `SMQ040` ("Do you now smoke cigarettes?") was combined with `SMQ020` ("Smoked at least 100 cigarettes in life") to define smoking status. The new definition is mentioned in @sec-variables.
 
 <!-- ## Discussion {#sec-discussion} -->
 
