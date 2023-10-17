@@ -396,6 +396,10 @@ dat_15 <- dat_15_demographic %>%
     by = "subject_id"
   ) %>% 
   full_join(
+    dat_15_diabetes,
+    by = "subject_id"
+  ) %>% 
+  full_join(
     dat_15_smoking,
     by = "subject_id"
   ) %>% 
@@ -414,6 +418,10 @@ dat_17 <- dat_17_demographic %>%
   ) %>% 
   full_join(
     dat_17_insurance,
+    by = "subject_id"
+  ) %>% 
+  full_join(
+    dat_17_diabetes,
     by = "subject_id"
   ) %>% 
   full_join(
@@ -478,7 +486,8 @@ survey_design$variables <- survey_design$variables %>%
     asthma_ed_visits_year = "ED visits for asthma/past yr",
     lung_cancer = "Lung cancer",
     smoking_status = "Smoking status",
-    num_smoke_inside = "No. of people who smoke inside"
+    num_smoke_inside = "No. of people who smoke inside",
+    have_diabetes = "Has diabetes"
   )
 
 
