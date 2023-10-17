@@ -18,58 +18,44 @@ load(
 ##        between the cycles
 
 dat_analytic %>% 
-  group_by(
-    cycle
-  ) %>% 
-  summarise(
-    n = n(),
-    across(
-      .cols = !n,
-      .fns = ~ sum(is.na(.x))
-    )
-  ) %>% 
-  pivot_longer(
-    cols = !cycle,
-    names_to = "variable",
-    values_to = "n"
-  ) %>% 
+  get_n_missing_df() %>% 
   print(
-    n = 100
+    n = 25
   )
 
 
 ## Explore counts in other variables ####
 
-dat_analytic %>% 
-  count(
-    asthma
-  )
-
-dat_analytic %>% 
-  count(
-    has_insurance
-  )
-
-dat_analytic %>% 
-  count(
-    has_insurance
-  )
-
-dat_analytic %>% 
-  count(
-    copd_or_others
-  )
-
-dat_analytic %>% 
-  count(
-    copd_or_others
-  )
-
-dat_analytic %>% 
-  count(
-    copd_or_others,
-    has_insurance
-  )
+# dat_analytic %>% 
+#   count(
+#     asthma
+#   )
+# 
+# dat_analytic %>% 
+#   count(
+#     has_insurance
+#   )
+# 
+# dat_analytic %>% 
+#   count(
+#     has_insurance
+#   )
+# 
+# dat_analytic %>% 
+#   count(
+#     copd_or_others
+#   )
+# 
+# dat_analytic %>% 
+#   count(
+#     copd_or_others
+#   )
+# 
+# dat_analytic %>% 
+#   count(
+#     copd_or_others,
+#     has_insurance
+#   )
 
 
 ## Generate table 1 ####
