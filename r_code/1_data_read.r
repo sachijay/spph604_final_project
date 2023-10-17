@@ -432,7 +432,10 @@ dat_17 <- dat_17_demographic %>%
 dat_combined <- bind_rows(
   dat_15,
   dat_17
-)
+) %>% 
+  mutate(
+    interview_wt_adj = 3*interview_wt/5.2
+  )
 
 
 ## Apply exclusion criteria ####
@@ -484,6 +487,7 @@ survey_design$variables <- survey_design$variables %>%
     age_years = "Age (years)",
     relative_asthma = "Close relative with asthma",
     asthma_ed_visits_year = "ED visits for asthma/past yr",
+    n_times_healthcare_visit = "No. of healthcare visits",
     lung_cancer = "Lung cancer",
     smoking_status = "Smoking status",
     num_smoke_inside = "No. of people who smoke inside",
