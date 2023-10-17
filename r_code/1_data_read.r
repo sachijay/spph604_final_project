@@ -343,7 +343,8 @@ dat_17_smoking <- full_join(
     num_smoke_inside = case_when(
       num_smoke_inside %in% c(777, 999) ~ NA_integer_, ## Refused and don't know as NA
       TRUE ~ as.integer(num_smoke_inside)
-    )
+    ),
+    .keep = "unused"
   )
 
 
@@ -476,7 +477,7 @@ survey_design$variables <- survey_design$variables %>%
     relative_asthma = "Close relative with asthma",
     asthma_ed_visits_year = "ED visits for asthma/past yr",
     lung_cancer = "Lung cancer",
-    smoked_100_life = "Smoked more than 100 cigarettes/life",
+    smoking_status = "Smoking status",
     num_smoke_inside = "No. of people who smoke inside"
   )
 
