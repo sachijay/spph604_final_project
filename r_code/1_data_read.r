@@ -485,6 +485,7 @@ survey_design$variables <- survey_design$variables %>%
     copd_or_others = "Have/Had COPD",
     has_insurance = "Has insurance",
     age_years = "Age (years)",
+    sex = "Sex",
     relative_asthma = "Close relative with asthma",
     asthma_ed_visits_year = "ED visits for asthma/past yr",
     n_times_healthcare_visit = "No. of healthcare visits",
