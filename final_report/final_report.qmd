@@ -59,7 +59,7 @@ source(
 <!-- Asthma patients can have an increase risk of diagnosis of chronic obstructive pulmonary disease (COPD). Other risk factors accelerating time-to-COPD diagnosis includes male sex, older adults (age > 40 years), history of tobacco smoking, asthma exacerbations, frequent emergency admissions, longer hospital stay, patients with increased burden of comorbidities, obese male sex, SABA overuse, moderate and severe asthma [@asamoah-boaheng_examining_2022]. -->
 
 
-## Methods {#sec-methods}
+## Methods (XX words) {#sec-methods}
 
 ```{r}
 #| label: sample_counts
@@ -112,6 +112,13 @@ n_age_excluded <- dat_full %>%
 
 n_analytic_sample <- nrow(dat_analytic)
 
+n_complete_data <- model_base_unweighted$data %>% 
+  select(
+    copd_or_others, has_insurance, n_times_healthcare_visit, smoking_status, num_smoke_inside, have_diabetes, lung_cancer, age_years, sex
+  ) %>% 
+  na.omit() %>% 
+  nrow()
+
 ```
 
 
@@ -121,7 +128,7 @@ This study includes respondents from non-institutionalized United States (US) ci
 
 To increase the sample size two data cycles were combined for this analysis. NHANES releases public data in two-year cycles, but the 2019-2020 cycle was not completed due to the coronavirus (COVID-19) pandemic. Therefore data collected from 2019 to March 2020 (pre-pandemic) were combined with NHANES 2017-2018 to get a nationally representative sample [@akinbam_national_2022]. The 2017-2020 pre-pandemic and 2015-2016 cycles were used for this study for a total of $5.2$ years.
 
-There are $`r format(n_15_16, big.mark = ",", trim = TRUE)`$ records (respondents) in the 2015-2016 cycle and $`r format(n_17_20, big.mark = ",", trim = TRUE)`$ in the 2017-March 2020 cycle. Therefore the full dataset contains $`r format(n_15_16 + n_17_20, big.mark = ",", trim = TRUE)`$ records. From the full data $`r format(n_non_asthma, big.mark = ",", trim = TRUE)`$ non-asthma patient records were excluded. Further $`r format(n_age_excluded, big.mark = ",", trim = TRUE)`$ respondents younger than $20$ years old and older than $80$ years, were removed. Missing values for the exposure and outcome were defined as exclusion criteria. The final sample included respondents $`r format(n_analytic_sample, big.mark = ",", trim = TRUE)`$ (see @fig-flowchart).
+There are $`r miscr:::format_number(n_15_16, .output_digits = 0)`$ records (respondents) in the 2015-2016 cycle and $`r miscr:::format_number(n_17_20, .output_digits = 0)`$ in the 2017-March 2020 cycle. Therefore the full dataset contains $`r miscr:::format_number(n_15_16 + n_17_20, .output_digits = 0)`$ records. From the full data $`r miscr:::format_number(n_non_asthma, .output_digits = 0)`$ non-asthma patient records were excluded. Further $`r miscr:::format_number(n_age_excluded, .output_digits = 0)`$ respondents younger than $20$ years old and older than $80$ years, were removed. Missing values for the exposure and outcome were defined as exclusion criteria. The final sample included respondents $`r miscr:::format_number(n_analytic_sample, .output_digits = 0)`$ (see @fig-flowchart).
 
 ![Flowchart of the study population and sample size for the analysis.](../figures/sample_sizes_flowchart.png){#fig-flowchart width=40%}
 
@@ -145,17 +152,22 @@ Sex and age, in years, at the time of screening were used as other covariates in
 
 NHANES uses a four-stage clustered sampling design and provides sampling weights for each respondent after accounting for the said sampling design and oversampling criteria [@chen_national_2020; @akinbam_national_2022]. To account for this complex sampling design, survey weights were used. Since multiple cycles were combined sample weights should be adjusted accordingly. Guidelines specify multiplying 2015-2016 weights by $\frac{2}{5.2}$ and 2017-March 2020 weights by $\frac{3.2}{5.2}$. All variables used in this study were collected through the household questionnaire. Therefore interview weights were used in this analysis [@akinbam_national_2022].
 
-Descriptive statistics were obtained with design adjusted medians, 1st and 3rd quartiles for numerical variables and design adjusted percentages for categorical variables. Missing values with percentages less than $5\%$ were imputed using multiple imputation based on Fully Conditional Specification (FCS) [@buuren_mice_2011]. FCS was used in this data assuming that data are missing at random (MAR) [@liu_multiple_2015]. Predictive mean matching was used when imputing missing numeric variables, logistic regression imputation for dichotomous variables and polytomous regression imputation for categorical data with more than 2 levels.
+Descriptive statistics were obtained with design adjusted medians, 1st and 3rd quartiles for numerical variables and design adjusted percentages for categorical variables. Odds ratios (OR) were obtained using a logistic regression model while adjusting for variables healthcare use, lung cancer, smoking status, number of smokers inside the home, and diabetes.
 
-Odds ratios (OR) were obtained using a logistic regression model while adjusting for variables healthcare use, lung cancer, smoking status, number of smokers inside the home, and diabetes. 
+Missing values were imputed using multiple imputation (MI) based on Fully Conditional Specification (FCS) [@buuren_mice_2011]. FCS was used in this data assuming that data are missing at random (MAR) [@liu_multiple_2015]. Predictive mean matching was used when imputing missing numeric variables, logistic regression imputation for dichotomous variables and polytomous regression imputation for categorical data with more than 2 levels.
 
 All analysis were conducted using R version 4.3.1 [@r_core_team_r_2023]. Data manipulation was done using the `dplyr` package [@wickham_dplyr_2023] and complex survey design features were incorporated using the `survey` package [@lumley_complex_2010]. Multiple imputation was performed using the `mice` package [@buuren_mice_2011].
 
 
-## Results {#sec-results}
+## Results (XX words) {#sec-results}
+
+Variables used used in this study, grouped by levels of the outcome, are summarized in @tbl-tableone accounting for the complex survey design. Respondents with diagnosed COPD are older (with a median age of $57$) than respondents without COPD (median age $39$). There are approximately $50\%$ males and females without COPD while more females in the sample are diagnosed with COPD. The median number of healthcare visits in the past year is similar between the two response groups. The proportion of lung cancer among respondents in this sample is close to zero ($2\%$ in the COPD group and almost $0\%$ in the non-COPD group). Conforming to what was observed in the literature, there are more current and former smokers with COPD and more respondents who have never smoked in the non-COPD group. There are more respondents with diabetes in the COPD group ($24\%$) compared to the non-COPD group ($10\%$).
+
+Majority of the respondents didn't answer the number smokers inside the house, with $52\%$ missing in the COPD group and $72\%$ in the non-COPD group.
+
 
 ```{r}
-#| label: table_one
+#| label: tbl-tableone
 #| tbl-cap: Characteristics of the participants by COPD status. All proportions adjusted for the survey design.
 
 as_gt(
@@ -165,7 +177,19 @@ as_gt(
 ```
 
 ```{r}
-#| label: base_model
+#| label: crude-or
+
+crude_or <- exp(model_base_crude$coefficients[2])
+crude_or_ci <- exp(confint(model_base_crude)[2, ])
+
+```
+
+Unadjusted OR for the outcome (COPD) and exposure (insurance status) was calculated for the complete data, containing $`r miscr:::format_number(n_complete_data, .output_digits = 0)`$ records. The OR was $`r miscr:::format_number(crude_or, .output_digits = 2)`$ with a confidence interval of ($`r miscr:::format_number(crude_or_ci[1], .output_digits = 2)`$, $`r miscr:::format_number(crude_or_ci[2], .output_digits = 2)`$). Therefore, the odds of being diagnosed with COPD is $1.6$ times higher in US adults without health insurance, compared to US adults with health insurance.
+
+OR from the logistic regression model for the complete data are shown in @tbl-base_model-complete. Lung cancer is included in the model, despite having proportions with the disease close to zero, to avoid misspecification of the model. But the OR for lung cancer produced by the regression model is ignored. After adjusting for the confounders and other variables, the OR ($1.08$) shows that there is no significant difference (p-value = $0.80$) in the odds of being diagnosed with COPD between US adults with or without health insurance.
+
+```{r}
+#| label: tbl-base_model-complete
 #| tbl-cap: Adjusted odds ratios. All proportions adjusted for the survey design.
 
 as_gt(
@@ -174,6 +198,29 @@ as_gt(
 
 ```
 
+
+## Results in progress
+
+The reported OR uses the complete data with no missing values. This approach might not be suitable since there is a variable with high missing values. Therefore, multiple imputation would be used in the future submission to impute missing data. A sensitivity analysis will be carried out with the "duration since last healthcare visit" replacing the number of visits, already included in the model.
+
+
+## PICOT
+
+|    | Description                                                                                                            |
+|:--:|:-----------------------------------------------------------------------------------------------------------------------|
+| P  | Non-institutionalized United States civilian adults aged 20-80 years with asthma, in all 50 states and Washington D.C. |
+| I  | Individuals without access to health insurance                                                                         |
+| C  | Individuals with access to health insurance                                                                            |
+| O  | Chronic obstructive pulmonary disease (COPD)                                                                           |
+| T  | NHANES 2015-March 2020 (pre-pandemic)                                                                                  |
+
+
+## Changes since the SAP
+
+* The population was changed with people 80 years and older removed. This was done because NHANES reports 80 and above as 80.  
+* The variable "close relatives with asthma" was removed following reviewer feedback.  
+* "Frequency of healthcare visits" (`HUQ051`) was considered in the base case instead of "duration since last healthcare visit", following reviewer feedback. The duration will still be used in the sensitivity analysis.  
+* `SMQ040` ("Do you now smoke cigarettes?") was combined with `SMQ020` ("Smoked at least 100 cigarettes in life") to define smoking status. The new definition is mentioned in @ssec-variables.
 
 <!-- ## Discussion {#sec-discussion} -->
 
@@ -188,4 +235,23 @@ as_gt(
 
 ## Appendix {.appendix}
 
-Add appendix
+```{r}
+#| label: tbl-tableone_unweighted
+#| tbl-cap: Characteristics of the participants by COPD status ignoring complex sampling design.
+
+as_gt(
+  tab_1_unweighted
+)
+
+```
+
+
+```{r}
+#| label: tbl-base_model-complete-unweighted
+#| tbl-cap: Adjusted odds ratios ignoring complex sampling design.
+
+as_gt(
+  result_mod_base_unweighted
+)
+
+```
