@@ -26,36 +26,36 @@ dat_analytic %>%
 
 ## Explore counts in other variables ####
 
-# dat_analytic %>% 
-#   count(
-#     asthma
-#   )
-# 
-# dat_analytic %>% 
-#   count(
-#     has_insurance
-#   )
-# 
-# dat_analytic %>% 
-#   count(
-#     has_insurance
-#   )
-# 
-# dat_analytic %>% 
-#   count(
-#     copd_or_others
-#   )
-# 
-# dat_analytic %>% 
-#   count(
-#     copd_or_others
-#   )
-# 
-# dat_analytic %>% 
-#   count(
-#     copd_or_others,
-#     has_insurance
-#   )
+dat_analytic %>%
+  count(
+    asthma
+  )
+
+dat_analytic %>%
+  count(
+    has_insurance
+  )
+
+dat_analytic %>%
+  count(
+    has_insurance
+  )
+
+dat_analytic %>%
+  count(
+    copd_or_others
+  )
+
+dat_analytic %>%
+  count(
+    copd_or_others
+  )
+
+dat_analytic %>%
+  count(
+    copd_or_others,
+    has_insurance
+  )
 
 
 ## Generate table 1 ####
@@ -67,7 +67,7 @@ survey_design_table1$variables <- survey_design_table1$variables %>%
     num_smoke_inside = num_smoke_inside %>% 
       as.factor(),
     across(
-      .cols = c(relative_asthma, asthma_ed_visits_year, lung_cancer, smoked_100_life, num_smoke_inside),
+      .cols = c(relative_asthma, asthma_ed_visits_year, lung_cancer, smoking_status, num_smoke_inside),
       .fns = ~ fct_na_value_to_level(.x, level = "Missing")
     )
   ) %>% 
@@ -79,7 +79,7 @@ survey_design_table1$variables <- survey_design_table1$variables %>%
 tab_1_weighted <- tbl_svysummary(
   data = survey_design_table1,
   by = copd_or_others,
-  include = c(has_insurance, age_years, relative_asthma, asthma_ed_visits_year, lung_cancer, smoked_100_life, num_smoke_inside),
+  include = c(has_insurance, age_years, relative_asthma, asthma_ed_visits_year, lung_cancer, smoking_status, num_smoke_inside),
   percent = "column",
   statistic = list(
     all_continuous() ~ "{median} ({p25}, {p75})",
