@@ -13,7 +13,10 @@ format:
       - top = 30mm
       - left = 20mm
       - heightrounded
-    
+  docx:
+    number-sections: true
+    fig-cap-location: bottom
+    tbl-cap-location: top
 date: last-modified
 author:
   - name: Mango Tango - PJ
