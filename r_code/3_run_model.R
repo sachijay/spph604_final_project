@@ -18,7 +18,7 @@ load(
 ### Unweighted ####
 
 model_base_unweighted <- glm(
-  copd_or_others ~ has_insurance + n_times_healthcare_visit + smoking_status + num_smoke_inside + have_diabetes + age_years + sex,
+  copd_or_others ~ has_insurance + n_times_healthcare_visit + smoking_status + num_smoke_inside + have_diabetes + lung_cancer + age_years + sex,
   data = dat_analytic,
   family = binomial(link = "logit")
 )
@@ -31,8 +31,14 @@ result_mod_base_unweighted <- tbl_regression(
 
 ### Weighted ####
 
+model_base_crude <- svyglm(
+  copd_or_others ~ has_insurance,
+  design = survey_design,
+  family = binomial(link = "logit")
+)
+
 model_base <- svyglm(
-  copd_or_others ~ has_insurance + n_times_healthcare_visit + smoking_status + num_smoke_inside + have_diabetes + age_years + sex,
+  copd_or_others ~ has_insurance + n_times_healthcare_visit + smoking_status + num_smoke_inside + have_diabetes + lung_cancer + age_years + sex,
   design = survey_design,
   family = binomial(link = "logit")
 )
