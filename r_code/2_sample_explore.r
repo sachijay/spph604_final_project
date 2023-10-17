@@ -94,6 +94,12 @@ tab_1_unweighted <- tbl_summary(
 ) %>% 
   add_overall(
     last = FALSE
+  ) %>% 
+  modify_header(
+    label = "**Characteristic**",
+    stat_0 = "**Overall** (n=2,154)",
+    stat_1 = "**Has COPD** (n=508)",
+    stat_2 = "**Doesn't have COPD** (n=1,646)"
   )
 
 
