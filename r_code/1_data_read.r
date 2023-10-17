@@ -431,7 +431,7 @@ dat_combined <- bind_rows(
 dat_full <- dat_combined %>% 
   mutate(
     asthma_inclusion = asthma == "Yes",
-    age_inclusion = age_years >= 20, 
+    age_inclusion = age_years >= 20 & age_years < 80, 
     exposure_na_inclusion = !is.na(has_insurance), 
     response_na_inclusion = !is.na(copd_or_others),
     exclude = !(asthma_inclusion & age_inclusion & 
@@ -442,9 +442,9 @@ dat_full <- dat_combined %>%
 dat_analytic <- dat_full %>% ## 25,531 records
   filter(
     asthma_inclusion, ## 3,765 records remaining
-    age_inclusion, ## 2,284 records remaining
-    exposure_na_inclusion, ## 2,275 records remaining
-    response_na_inclusion ## 2,264 records remaining
+    age_inclusion, ## 2,172 records remaining
+    exposure_na_inclusion, ## 2,164 records remaining
+    response_na_inclusion ## 2,154 records remaining
   ) %>%
   droplevels.data.frame()
 
