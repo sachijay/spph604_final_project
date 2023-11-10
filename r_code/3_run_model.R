@@ -29,6 +29,16 @@ result_mod_base_unweighted <- tbl_regression(
 )
 
 
+
+## Model diagnostics
+
+model_base_unweighted_auc <- WeightedROC::WeightedAUC(
+  WeightedROC::WeightedROC(
+    
+  )
+)
+
+
 ### Weighted ####
 
 model_base_crude <- svyglm(
