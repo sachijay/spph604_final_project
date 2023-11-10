@@ -474,6 +474,13 @@ dat_analytic <- dat_full %>% ## 25,531 records
   )
 
 
+## Complete data
+dat_analytic_no_miss <- dat_analytic %>% 
+  drop_na(
+    copd_or_others, has_insurance, n_times_healthcare_visit, smoking_status, num_smoke_inside, have_diabetes, age_years, sex
+  )
+
+
 ## Define the survey design ####
 
 survey_design_full <- svydesign(
@@ -514,6 +521,7 @@ survey_design$variables <- survey_design$variables %>%
 save(
   dat_full,
   dat_analytic,
+  dat_analytic_no_miss,
   survey_design_full,
   survey_design,
   file = here::here("data", "final_data.rdata")
