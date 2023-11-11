@@ -480,6 +480,11 @@ dat_analytic_no_miss <- dat_analytic %>%
     copd_or_others, has_insurance, n_times_healthcare_visit, smoking_status, num_smoke_inside, have_diabetes, age_years, sex
   )
 
+dat_full <- dat_full %>% 
+  mutate(
+    is_complete = subject_id %in% dat_analytic_no_miss$subject_id
+  )
+
 
 ## Define the survey design ####
 
@@ -494,13 +499,33 @@ survey_design_full <- svydesign(
 
 ## Subset the survey design
 
-survey_design <- subset(
+survey_design_analytic <- subset(
   survey_design_full, 
   !exclude
 )
 
+survey_design_no_miss <- subset(
+  survey_design_full, 
+  is_complete
+)
+
 ## Change variable labels
-survey_design$variables <- survey_design$variables %>% 
+survey_design_analytic$variables <- survey_design_analytic$variables %>% 
+  labelled::set_variable_labels(
+    copd_or_others = "Have/Had COPD",
+    has_insurance = "Has insurance",
+    age_years = "Age (years)",
+    sex = "Sex",
+    relative_asthma = "Close relative with asthma",
+    asthma_ed_visits_year = "ED visits for asthma/past yr",
+    n_times_healthcare_visit = "No. of healthcare visits",
+    lung_cancer = "Lung cancer",
+    smoking_status = "Smoking status",
+    num_smoke_inside = "No. of people who smoke inside",
+    have_diabetes = "Has diabetes"
+  )
+
+survey_design_no_miss$variables <- survey_design_no_miss$variables %>% 
   labelled::set_variable_labels(
     copd_or_others = "Have/Had COPD",
     has_insurance = "Has insurance",
@@ -523,6 +548,7 @@ save(
   dat_analytic,
   dat_analytic_no_miss,
   survey_design_full,
-  survey_design,
+  survey_design_analytic,
+  survey_design_no_miss,
   file = here::here("data", "final_data.rdata")
 )
