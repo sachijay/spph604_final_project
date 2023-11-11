@@ -458,27 +458,15 @@ dat_analytic <- dat_full %>% ## 25,531 records
     exposure_na_inclusion, ## 2,164 records remaining
     response_na_inclusion ## 2,154 records remaining
   ) %>%
-  droplevels.data.frame() %>% 
-  labelled::set_variable_labels(
-    copd_or_others = "Have/Had COPD",
-    has_insurance = "Has insurance",
-    age_years = "Age (years)",
-    sex = "Sex",
-    relative_asthma = "Close relative with asthma",
-    asthma_ed_visits_year = "ED visits for asthma/past yr",
-    n_times_healthcare_visit = "No. of healthcare visits",
-    lung_cancer = "Lung cancer",
-    smoking_status = "Smoking status",
-    num_smoke_inside = "No. of people who smoke inside",
-    have_diabetes = "Has diabetes"
-  )
+  droplevels.data.frame()
 
 
 ## Complete data
 dat_analytic_no_miss <- dat_analytic %>% 
   drop_na(
     copd_or_others, has_insurance, n_times_healthcare_visit, smoking_status, num_smoke_inside, have_diabetes, age_years, sex
-  )
+  ) %>%
+  droplevels.data.frame()
 
 dat_full <- dat_full %>% 
   mutate(
@@ -510,6 +498,36 @@ survey_design_no_miss <- subset(
 )
 
 ## Change variable labels
+dat_analytic <- dat_analytic %>% 
+  labelled::set_variable_labels(
+    copd_or_others = "Have/Had COPD",
+    has_insurance = "Has insurance",
+    age_years = "Age (years)",
+    sex = "Sex",
+    relative_asthma = "Close relative with asthma",
+    asthma_ed_visits_year = "ED visits for asthma/past yr",
+    n_times_healthcare_visit = "No. of healthcare visits",
+    lung_cancer = "Lung cancer",
+    smoking_status = "Smoking status",
+    num_smoke_inside = "No. of people who smoke inside",
+    have_diabetes = "Has diabetes"
+  )
+
+dat_analytic_no_miss <- dat_analytic_no_miss %>% 
+  labelled::set_variable_labels(
+    copd_or_others = "Have/Had COPD",
+    has_insurance = "Has insurance",
+    age_years = "Age (years)",
+    sex = "Sex",
+    relative_asthma = "Close relative with asthma",
+    asthma_ed_visits_year = "ED visits for asthma/past yr",
+    n_times_healthcare_visit = "No. of healthcare visits",
+    lung_cancer = "Lung cancer",
+    smoking_status = "Smoking status",
+    num_smoke_inside = "No. of people who smoke inside",
+    have_diabetes = "Has diabetes"
+  )
+
 survey_design_analytic$variables <- survey_design_analytic$variables %>% 
   labelled::set_variable_labels(
     copd_or_others = "Have/Had COPD",
