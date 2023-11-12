@@ -147,3 +147,16 @@ tab_1_design_adjusted <- tbl_svysummary(
     stat_1 = "**Has COPD** (n=508)",
     stat_2 = "**Doesn't have COPD** (n=1,646)"
   )
+
+
+## Save table 1 to file ####
+
+list(
+  unadjusted = tab_1_design_unadjusted %>% 
+    as_tibble(),
+  adjusted = tab_1_design_adjusted %>% 
+    as_tibble()
+) %>% 
+  writexl::write_xlsx(
+    path = here::here("results", "table_1.xlsx")
+  )
