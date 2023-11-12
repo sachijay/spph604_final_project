@@ -440,29 +440,22 @@ dat_combined <- bind_rows(
 
 ## Apply exclusion criteria ####
 
-dat_full <- dat_combined %>% 
+## Full dataset (used to setup the survey design)
+dat_full <- dat_combined %>% ## 25,531 records
   mutate(
-    asthma_inclusion = asthma == "Yes",
-    age_inclusion = age_years >= 20 & age_years < 80, 
-    exposure_na_inclusion = !is.na(has_insurance), 
-    response_na_inclusion = !is.na(copd_or_others),
+    asthma_inclusion = asthma == "Yes", ## 3,765 records remaining
+    age_inclusion = age_years >= 20 & age_years < 80, ## 2,172 records remaining
+    exposure_na_inclusion = !is.na(has_insurance), ## 2,164 records remaining
+    response_na_inclusion = !is.na(copd_or_others), ## 2,154 records remaining
     exclude = !(asthma_inclusion & age_inclusion & 
                   exposure_na_inclusion & response_na_inclusion)
   )
 
-## Not used when using survey designs
-dat_analytic <- dat_full %>% ## 25,531 records
-  filter(
-    asthma_inclusion, ## 3,765 records remaining
-    age_inclusion, ## 2,172 records remaining
-    exposure_na_inclusion, ## 2,164 records remaining
-    response_na_inclusion ## 2,154 records remaining
-  ) %>%
-  droplevels.data.frame()
-
-
-## Complete data
+## Complete dataset (not used when using survey designs!!!!)
 dat_analytic_no_miss <- dat_analytic %>% 
+  filter(
+    !exclude
+  ) %>% 
   drop_na(
     copd_or_others, has_insurance, n_times_healthcare_visit, smoking_status, num_smoke_inside, have_diabetes, age_years, sex
   ) %>%
@@ -472,6 +465,13 @@ dat_full <- dat_full %>%
   mutate(
     is_complete = subject_id %in% dat_analytic_no_miss$subject_id
   )
+
+## Analytic dataset (not used when using survey designs!!!!)
+dat_analytic <- dat_full %>% 
+  filter(
+    !exclude
+  ) %>%
+  droplevels.data.frame()
 
 
 ## Define the survey design ####
