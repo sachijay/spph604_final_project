@@ -75,7 +75,7 @@ dat_analytic_table1 <- dat_analytic %>%
     num_smoke_inside = "No. of people who smoke inside"
   )
 
-tab_1_unweighted <- tbl_summary(
+tab_1_design_unadjusted <- tbl_summary(
   data = dat_analytic_table1,
   by = copd_or_others,
   include = c(has_insurance, age_years, sex, n_times_healthcare_visit, lung_cancer, smoking_status, num_smoke_inside, have_diabetes),
@@ -121,7 +121,7 @@ survey_design_table1$variables <- survey_design_table1$variables %>%
   )
 
 
-tab_1_weighted <- tbl_svysummary(
+tab_1_design_adjusted <- tbl_svysummary(
   data = survey_design_table1,
   by = copd_or_others,
   include = c(has_insurance, age_years, sex, n_times_healthcare_visit, lung_cancer, smoking_status, num_smoke_inside, have_diabetes),
