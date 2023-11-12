@@ -445,7 +445,7 @@ dat_combined <- bind_rows(
 ## Full dataset (used to setup the survey design)
 dat_full <- dat_combined %>% ## 25,531 records
   mutate(
-    asthma_inclusion = asthma == "Yes", ## 3,765 records remaining
+    asthma_inclusion = asthma %in% "Yes", ## 3,765 records remaining
     age_inclusion = age_years >= 20 & age_years < 80, ## 2,172 records remaining
     exposure_na_inclusion = !is.na(has_insurance), ## 2,164 records remaining
     response_na_inclusion = !is.na(copd_or_others), ## 2,154 records remaining
