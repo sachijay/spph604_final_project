@@ -459,7 +459,10 @@ dat_analytic_no_miss <- dat_analytic %>%
   drop_na(
     copd_or_others, has_insurance, n_times_healthcare_visit, smoking_status, num_smoke_inside, have_diabetes, age_years, sex
   ) %>%
-  droplevels.data.frame()
+  droplevels.data.frame() %>% 
+  mutate(
+    is_complete = TRUE
+  )
 
 dat_full <- dat_full %>% 
   mutate(
