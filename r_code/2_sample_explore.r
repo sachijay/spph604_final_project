@@ -82,7 +82,7 @@ tab_1_unweighted <- tbl_summary(
   percent = "column",
   statistic = list(
     all_continuous() ~ "{median} ({p25}, {p75})",
-    all_categorical() ~ "{p}%"
+    all_categorical() ~ "{n} ({p}%)"
   ),
   type = list(
     where(is.factor) ~ "categorical" ## To show both levels of dichotomous variables
