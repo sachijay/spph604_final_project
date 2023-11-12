@@ -67,7 +67,7 @@ dat_analytic_table1 <- dat_analytic %>%
     num_smoke_inside = num_smoke_inside %>% 
       as.factor(),
     across(
-      .cols = c(relative_asthma, asthma_ed_visits_year, lung_cancer, have_diabetes, health_care, smoking_status, num_smoke_inside),
+      .cols = c(relative_asthma, asthma_ed_visits_year, lung_cancer, have_diabetes, n_times_healthcare_visit, smoking_status, num_smoke_inside),
       .fns = ~ fct_na_value_to_level(.x, level = "Missing")
     )
   ) %>% 
@@ -112,7 +112,7 @@ survey_design_table1$variables <- survey_design_table1$variables %>%
     num_smoke_inside = num_smoke_inside %>% 
       as.factor(),
     across(
-      .cols = c(relative_asthma, asthma_ed_visits_year, lung_cancer, have_diabetes, health_care, smoking_status, num_smoke_inside),
+      .cols = c(relative_asthma, asthma_ed_visits_year, lung_cancer, have_diabetes, n_times_healthcare_visit, smoking_status, num_smoke_inside),
       .fns = ~ fct_na_value_to_level(.x, level = "Missing")
     )
   ) %>% 
