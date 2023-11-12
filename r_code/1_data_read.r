@@ -565,6 +565,138 @@ survey_design_no_miss$variables <- survey_design_no_miss$variables %>%
   )
 
 
+## Multiple imputation ####
+
+## Variables used in the model
+impute_vars <- c(
+  "have_diabetes",
+  "smoking_status",
+  "n_times_healthcare_visit",
+  "num_smoke_inside"
+)
+
+impute_exclude_aux_vars <- c(
+  "asthma", ## Constant
+  "asthma_ed_visits_year", ## Contains a high % of missing values
+  "subject_id",
+  "interview_wt", 
+  "asthma_inclusion", 
+  "age_inclusion", 
+  "exposure_na_inclusion", 
+  "response_na_inclusion", 
+  "exclude", 
+  "is_complete"
+)
+
+
+## Number of imputations
+n_imputations <- 10
+
+
+## Setup the matrix specifying what variables needs to be imputed
+impute_var_mat <- matrix(
+  data = 0,
+  nrow = ncol(dat_analytic),
+  ncol = ncol(dat_analytic)
+)
+rownames(impute_var_mat) <- colnames(impute_var_mat) <- colnames(dat_analytic)
+impute_var_mat[impute_vars,] <- 1
+impute_var_mat[, impute_exclude_aux_vars] <- 0
+
+
+### Run the imputation ####
+
+imp_result <- mice::futuremice(
+  data = dat_analytic,
+  m = n_imputations,
+  predictorMatrix = impute_var_mat,
+  maxit = n_imputations,
+  parallelseed = 604,
+  n.core = min(parallel::detectCores()-2, n_imputations)
+)
+
+
+### Prep the imputation data ####
+
+imp_dat_long <- imp_result %>% 
+  complete(
+    action = "long"
+  ) %>% 
+  as_tibble() %>% 
+  select(
+    !.id
+  )
+
+dat_excluded <- dat_full %>% 
+  filter(
+    exclude
+  )
+
+imp_dat_full_list <- lapply(
+  1:n_imputations, 
+  function(imp_no){
+    
+    bind_rows(
+      imp_dat_long %>% 
+        filter(
+          .imp == imp_no
+        ),
+      dat_excluded %>% 
+        add_column(
+          .imp = imp_no,
+          .before = 1
+        )
+    )
+    
+  }
+)
+
+
+### Setup survey designs with imputed data ####
+
+imp_survey_design_analytic_no_miss_list <- imp_dat_full_list %>% 
+  lapply(
+    function(imp_dat){
+      
+      design_full <- svydesign(
+        id = ~psu, 
+        strata = ~stratum, 
+        weights = ~interview_wt,
+        data = imp_dat, 
+        nest = TRUE
+      )
+      
+      design_analytic <- subset(
+        design_full, 
+        !exclude
+      )
+      
+      design_no_miss <- subset(
+        design_full, 
+        is_complete
+      )
+      
+      list(
+        analytic = design_analytic,
+        no_miss = design_no_miss
+      )
+      
+    }
+  )
+
+
+
+### Remove unwanted variables ####
+
+rm(
+  impute_vars,
+  impute_exclude_aux_vars,
+  n_imputations,
+  impute_var_mat
+)
+
+
+
 ## Save the final data sets into a file ####
 
 save(
@@ -574,5 +706,7 @@ save(
   survey_design_full,
   survey_design_analytic,
   survey_design_no_miss,
+  imp_dat_full_list,
+  imp_survey_design_analytic_no_miss_list,
   file = here::here("data", "final_data.rdata")
 )
