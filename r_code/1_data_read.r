@@ -223,7 +223,7 @@ dat_15_access_to_care <- dat_15_access_to_care_raw %>%
     n_times_healthcare_visit = HUQ051
   ) %>% 
   mutate(
-    health_care = fct_case_when( ## Refused and don't know as NA
+    n_times_healthcare_visit = fct_case_when( ## Refused and don't know as NA
       n_times_healthcare_visit == 0 ~ "None",
       n_times_healthcare_visit == 1 ~ "1",
       n_times_healthcare_visit == 2 ~ "2 to 3",
@@ -243,7 +243,7 @@ dat_17_access_to_care <- dat_17_access_to_care_raw %>%
     n_times_healthcare_visit = HUQ051
   ) %>% 
   mutate(
-    health_care = fct_case_when( ## Refused and don't know as NA
+    n_times_healthcare_visit = fct_case_when( ## Refused and don't know as NA
       n_times_healthcare_visit == 0 ~ "None",
       n_times_healthcare_visit == 1 ~ "1",
       n_times_healthcare_visit == 2 ~ "2 to 3",
@@ -454,7 +454,7 @@ dat_full <- dat_combined %>% ## 25,531 records
   )
 
 ## Complete dataset (not used when using survey designs!!!!)
-dat_analytic_no_miss <- dat_analytic %>% 
+dat_analytic_no_miss <- dat_full %>% 
   filter(
     !exclude
   ) %>% 
@@ -502,7 +502,8 @@ survey_design_no_miss <- subset(
   is_complete
 )
 
-## Change variable labels
+
+## Change variable labels ####
 dat_analytic <- dat_analytic %>% 
   labelled::set_variable_labels(
     copd_or_others = "Have/Had COPD",
