@@ -233,7 +233,8 @@ dat_15_access_to_care <- dat_15_access_to_care_raw %>%
       n_times_healthcare_visit == 6 ~ "10 to 12",
       n_times_healthcare_visit == 7 ~ "13 to 15",
       n_times_healthcare_visit == 8 ~ "16 or more"
-    )
+    ), 
+    .keep = "unused"
   )
 
 dat_17_access_to_care <- dat_17_access_to_care_raw %>% 
@@ -252,7 +253,8 @@ dat_17_access_to_care <- dat_17_access_to_care_raw %>%
       n_times_healthcare_visit == 6 ~ "10 to 12",
       n_times_healthcare_visit == 7 ~ "13 to 15",
       n_times_healthcare_visit == 8 ~ "16 or more"
-    )
+    ), 
+    .keep = "unused"
   )
 
 
