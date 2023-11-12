@@ -66,10 +66,6 @@ dat_analytic_table1 <- dat_analytic %>%
   mutate(
     num_smoke_inside = num_smoke_inside %>% 
       as.factor(),
-    across(
-      .cols = c(relative_asthma, asthma_ed_visits_year, lung_cancer, have_diabetes, n_times_healthcare_visit, smoking_status, num_smoke_inside),
-      .fns = ~ fct_na_value_to_level(.x, level = "Missing")
-    )
   ) %>% 
   labelled::set_variable_labels(
     num_smoke_inside = "No. of people who smoke inside"
@@ -90,7 +86,9 @@ tab_1_design_unadjusted <- tbl_summary(
   digits = list(
     all_continuous() ~ 1,
     all_categorical() ~ 0
-  )
+  ),
+  missing = "ifany",
+  missing_text = "Missing"
 ) %>% 
   add_overall(
     last = FALSE
@@ -111,10 +109,6 @@ survey_design_table1$variables <- survey_design_table1$variables %>%
   mutate(
     num_smoke_inside = num_smoke_inside %>% 
       as.factor(),
-    across(
-      .cols = c(relative_asthma, asthma_ed_visits_year, lung_cancer, have_diabetes, n_times_healthcare_visit, smoking_status, num_smoke_inside),
-      .fns = ~ fct_na_value_to_level(.x, level = "Missing")
-    )
   ) %>% 
   labelled::set_variable_labels(
     num_smoke_inside = "No. of people who smoke inside"
@@ -136,7 +130,9 @@ tab_1_design_adjusted <- tbl_svysummary(
   digits = list(
     all_continuous() ~ 1,
     all_categorical() ~ 0
-  )
+  ),
+  missing = "ifany",
+  missing_text = "Missing"
 ) %>% 
   add_overall(
     last = FALSE
