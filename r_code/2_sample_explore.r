@@ -105,7 +105,7 @@ tab_1_unweighted <- tbl_summary(
 
 ### Using sampling weights ####
 
-survey_design_table1 <- survey_design
+survey_design_table1 <- survey_design_analytic
 
 survey_design_table1$variables <- survey_design_table1$variables %>% 
   mutate(
