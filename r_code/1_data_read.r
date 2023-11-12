@@ -671,14 +671,9 @@ imp_survey_design_analytic_no_miss_list <- imp_dat_full_list %>%
         !exclude
       )
       
-      design_no_miss <- subset(
-        design_full, 
-        is_complete
-      )
-      
       list(
-        analytic = design_analytic,
-        no_miss = design_no_miss
+        full = design_full,
+        analytic = design_analytic
       )
       
     }
