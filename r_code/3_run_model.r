@@ -43,6 +43,26 @@ mod_base_design_adjusted <- svyglm(
 
 ## Design adjusted
 
+mod_imp_survey_design_analytic_crude_list <- imp_survey_design_analytic_no_miss_list %>% 
+  lapply(
+    function(imp){
+      
+      mod_imp_i_base_design_adjusted <- svyglm(
+        copd_or_others ~ has_insurance,
+        design = imp$analytic,
+        family = binomial(link = "logit")
+      )
+      
+      return(
+        mod_imp_i_base_design_adjusted
+      )
+      
+    }
+  )
+
+mod_imp_survey_design_adjusted_crude_pooled <- mod_imp_survey_design_analytic_crude_list %>% 
+  mice::pool()
+
 mod_imp_survey_design_analytic_list <- imp_survey_design_analytic_no_miss_list %>% 
   lapply(
     function(imp){
@@ -61,9 +81,7 @@ mod_imp_survey_design_analytic_list <- imp_survey_design_analytic_no_miss_list %
   )
 
 mod_imp_survey_design_adjusted_pooled <- mod_imp_survey_design_analytic_list %>% 
-  mice::pool() %>% 
-  mice::tidy()
-
+  mice::pool()
 
 
 ## Prepare output tables ####
@@ -83,10 +101,17 @@ result_mod_base_design_adjusted <- tbl_regression(
   exponentiate = TRUE
 )
 
-mitools::MIcombine(
-  mod_imp_survey_design_adjusted_pooled
-)
+mod_imp_survey_design_adjusted_crude_pooled %>% 
+  summary(
+    exponentiate = TRUE,
+    conf.int = TRUE
+  )
 
+mod_imp_survey_design_adjusted_pooled %>% 
+  summary(
+    exponentiate = TRUE,
+    conf.int = TRUE
+  )
 
 
 ## Model diagnostics ####
