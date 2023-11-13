@@ -15,38 +15,78 @@ load(
 
 ## Run model ####
 
-### Unweighted ####
+### Base - complete case ####
 
-model_base_unweighted <- glm(
+## Non-design adjusted
+mod_base_design_unadjusted <- glm(
   copd_or_others ~ has_insurance + n_times_healthcare_visit + smoking_status + num_smoke_inside + have_diabetes + age_years + sex,
-  data = dat_analytic,
+  data = dat_analytic_no_miss,
   family = binomial(link = "logit")
 )
 
-result_mod_base_unweighted <- tbl_regression(
-  model_base_unweighted,
-  exponentiate = TRUE
-)
 
-
-### Weighted ####
-
-model_base_crude <- svyglm(
+## Design adjusted
+mod_base_design_adjusted_crude <- svyglm(
   copd_or_others ~ has_insurance,
-  design = survey_design,
+  design = survey_design_no_miss,
   family = binomial(link = "logit")
 )
 
-model_base <- svyglm(
+mod_base_design_adjusted <- svyglm(
   copd_or_others ~ has_insurance + n_times_healthcare_visit + smoking_status + num_smoke_inside + have_diabetes + age_years + sex,
-  design = survey_design,
+  design = survey_design_no_miss,
   family = binomial(link = "logit")
 )
 
-result_mod_base <- tbl_regression(
-  model_base,
+
+### Base - multiple imputation ####
+
+## Design adjusted
+
+mod_imp_survey_design_analytic_list <- imp_survey_design_analytic_no_miss_list %>% 
+  lapply(
+    function(imp){
+      
+      mod_imp_i_base_design_adjusted <- svyglm(
+        copd_or_others ~ has_insurance + n_times_healthcare_visit + smoking_status + num_smoke_inside + have_diabetes + age_years + sex,
+        design = imp$analytic,
+        family = binomial(link = "logit")
+      )
+      
+      return(
+        mod_imp_i_base_design_adjusted
+      )
+      
+    }
+  )
+
+mod_imp_survey_design_adjusted_pooled <- mod_imp_survey_design_analytic_list %>% 
+  mice::pool() %>% 
+  mice::tidy()
+
+
+
+## Prepare output tables ####
+
+result_mod_base_design_unadjusted <- tbl_regression(
+  mod_base_design_unadjusted,
   exponentiate = TRUE
 )
+
+result_mod_base_design_adjusted_crude <- tbl_regression(
+  mod_base_design_adjusted_crude,
+  exponentiate = TRUE
+)
+
+result_mod_base_design_adjusted <- tbl_regression(
+  mod_base_design_adjusted,
+  exponentiate = TRUE
+)
+
+mitools::MIcombine(
+  mod_imp_survey_design_adjusted_pooled
+)
+
 
 
 ## Model diagnostics ####
