@@ -118,30 +118,41 @@ mod_imp_survey_design_adjusted_pooled %>%
 
 ### ROC ####
 
-gof_dat_unweighted_roc <- WeightedROC::WeightedROC(
-  guess = predict(model_base_unweighted, type = "response"),
+gof_mod_base_design_unadjusted_roc <- WeightedROC::WeightedROC(
+  guess = predict(mod_base_design_unadjusted, type = "response"),
   label = dat_analytic_no_miss$copd_or_others
 ) %>% 
   as_tibble() %>% 
   add_column(
-    model = "Unweighted",
+    model = "Unadjusted",
     .before = 1
   )
 
-gof_dat_weighted_roc <- WeightedROC::WeightedROC(
-  guess = predict(model_base, type = "response"),
+gof_mod_base_design_adjusted_crude_roc <- WeightedROC::WeightedROC(
+  guess = predict(mod_base_design_adjusted_crude, type = "response"),
   label = dat_analytic_no_miss$copd_or_others,
   weight = dat_analytic_no_miss$interview_wt_adj
 ) %>% 
   as_tibble() %>% 
   add_column(
-    model = "Weighted",
+    model = "Adjusted - Crude",
+    .before = 1
+  )
+
+gof_mod_base_design_adjusted_roc <- WeightedROC::WeightedROC(
+  guess = predict(mod_base_design_adjusted, type = "response"),
+  label = dat_analytic_no_miss$copd_or_others,
+  weight = dat_analytic_no_miss$interview_wt_adj
+) %>% 
+  as_tibble() %>% 
+  add_column(
+    model = "Adjusted",
     .before = 1
   )
 
 gof_dat_all_mod_roc <- bind_rows(
-  gof_dat_unweighted_roc,
-  gof_dat_weighted_roc
+  gof_mod_base_design_adjusted_crude_roc,
+  gof_mod_base_design_adjusted_roc
 )
 
 
@@ -165,12 +176,16 @@ gof_plot_all_mod <- gof_dat_all_mod_roc %>%
 
 ### Area under the curve (AUC) ####
 
-model_base_unweighted_auc <- WeightedROC::WeightedAUC(
-  gof_dat_unweighted_roc
+gof_mod_base_design_unadjusted_auc <- WeightedROC::WeightedAUC(
+  gof_mod_base_design_unadjusted_roc
 )
 
-model_base_weighted_auc <- WeightedROC::WeightedAUC(
-  gof_dat_weighted_roc
+gof_mod_base_design_adjusted_crude_auc <- WeightedROC::WeightedAUC(
+  gof_mod_base_design_adjusted_crude_roc
+)
+
+gof_mod_base_design_adjusted_auc <- WeightedROC::WeightedAUC(
+  gof_mod_base_design_adjusted_roc
 )
 
 
