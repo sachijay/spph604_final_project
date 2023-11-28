@@ -1,6 +1,6 @@
 ## Main file for the project
 
-## Install missing CRAN packages
+## Install missing packages ####
 cran_pkgs <- c("devtools", "tidyverse", "here", "labelled", "survey", "mice", "furrr", "gtsummary", "WeightedROC")
 if(length(missing_pkgs <- setdiff(cran_pkgs, row.names(utils::installed.packages()))) > 0){
   
