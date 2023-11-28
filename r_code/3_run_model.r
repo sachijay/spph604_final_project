@@ -189,3 +189,108 @@ gof_mod_base_design_adjusted_auc <- WeightedROC::WeightedAUC(
 )
 
 
+### Archer-Lemeshow goodness-of-fit test ####
+
+## Note: This function is copied from https://ehsanx.github.io/EpiMethods/missingdata4.html
+al_gof <- function(
+    fit, data, 
+    psu, strata, weight
+){
+  
+  r <- residuals(fit, type = "response") 
+  f <- fitted(fit)
+  
+  breaks.g <- c(-Inf, quantile(f, (1:9)/10), Inf)
+  breaks.g <- breaks.g + seq_along(breaks.g)*.Machine$double.eps
+  g <- cut(f, breaks.g)
+  data2g <- cbind(data, r, g)
+  
+  if (is.null(psu)){
+    
+    newdesign <- svydesign(
+      id = ~1,
+      weights = as.formula(paste0("~", weight)),
+      data = data2g, 
+      nest = TRUE
+    )
+    
+  } else {
+    
+    newdesign <- svydesign(
+      id = as.formula(paste0("~", psu)),
+      strata = as.formula(paste0("~", strata)),
+      weights = as.formula(paste0("~", weight)),
+      data = data2g, 
+      nest = TRUE
+    )
+    
+  }
+
+  decilemodel <- svyglm(
+    r ~ g, 
+    design = newdesign
+    )
+  
+  res <- survey::regTermTest(decilemodel, ~g)
+  
+  out <- as.numeric(res$p)
+  
+  return(out)
+  
+}
+
+
+### For non-imputed data ####
+
+gof_mod_base_design_unadjusted_al <- al_gof(
+  fit = mod_base_design_unadjusted, 
+  data = dat_analytic_no_miss,
+  psu = "psu", 
+  strata = "stratum",
+  weight = "interview_wt_adj"
+)
+
+gof_mod_base_design_adjusted_crude_al <- al_gof(
+  fit = mod_base_design_adjusted_crude, 
+  data = dat_analytic_no_miss,
+  psu = "psu", 
+  strata = "stratum",
+  weight = "interview_wt_adj"
+)
+
+gof_mod_base_design_adjusted_al <- al_gof(
+  fit = mod_base_design_adjusted, 
+  data = dat_analytic_no_miss,
+  psu = "psu", 
+  strata = "stratum",
+  weight = "interview_wt_adj"
+)
+
+
+### For imputed data ####
+
+n_imputations <- imp_dat_full_list |> 
+  length()
+
+1:n_imputations |> 
+  lapply(
+    function(imp_no){
+      
+      mod_fit_imp_no <- mod_imp_survey_design_analytic_list[[imp_no]]
+      
+      imp_dat_imp_no <- imp_dat_full_list[[imp_no]] |> 
+        filter(
+          !exclude
+        )
+      
+      al_gof(
+        fit = mod_fit_imp_no, 
+        data = imp_dat_imp_no, 
+        psu = "psu", 
+        strata = "stratum",
+        weight = "interview_wt_adj"
+      )
+      
+    }
+  )
+
