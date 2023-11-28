@@ -8,7 +8,8 @@ source(
 
 ## Read data ####
 
-## Demographic
+### Demographic ####
+
 dat_15_demographic_raw <- haven::read_xpt(
   file = here::here("data", "2015-2016", "DEMO_I.XPT")
 )
@@ -18,7 +19,7 @@ dat_17_demographic_raw <- haven::read_xpt(
 )
 
 
-## Medical conditions
+### Medical conditions ####
 
 dat_15_medical_conditions_raw <- haven::read_xpt(
   file = here::here("data", "2015-2016", "MCQ_I.XPT")
@@ -29,7 +30,7 @@ dat_17_medical_conditions_raw <- haven::read_xpt(
 )
 
 
-## Access to care
+### Access to care ####
 
 dat_15_access_to_care_raw <- haven::read_xpt(
   file = here::here("data", "2015-2016", "HUQ_I.XPT")
@@ -40,7 +41,7 @@ dat_17_access_to_care_raw <- haven::read_xpt(
 )
 
 
-## Insurance
+### Insurance ####
 
 dat_15_insurance_raw <- haven::read_xpt(
   file = here::here("data", "2015-2016", "HIQ_I.XPT")
@@ -51,7 +52,7 @@ dat_17_insurance_raw <- haven::read_xpt(
 )
 
 
-## Smoking (cigarette use)
+### Smoking (cigarette use) ####
 
 dat_15_smoking_raw <- haven::read_xpt(
   file = here::here("data", "2015-2016", "SMQ_I.XPT")
@@ -62,7 +63,7 @@ dat_17_smoking_raw <- haven::read_xpt(
 )
 
 
-## Smoking (household smokers)
+### Smoking (household smokers) ####
 
 dat_15_smoking_household_raw <- haven::read_xpt(
   file = here::here("data", "2015-2016", "SMQFAM_I.XPT")
@@ -73,7 +74,7 @@ dat_17_smoking_household_raw <- haven::read_xpt(
 )
 
 
-## Diabetes
+### Diabetes ####
 
 dat_15_diabetes_raw <- haven::read_xpt(
   file = here::here("data", "2015-2016", "DIQ_I.XPT")
@@ -350,7 +351,7 @@ dat_17_smoking <- full_join(
   )
 
 
-## Diabetes
+### Diabetes ####
 ## Variables needed:
 ##    * SEQN - Respondent sequence number
 ##    * DIQ010 - Doctor told you have diabetes
@@ -612,7 +613,7 @@ imp_result <- mice::futuremice(
   predictorMatrix = impute_var_mat,
   maxit = n_imputations,
   parallelseed = 604,
-  n.core = min(parallel::detectCores()-2, n_imputations)
+  n.core = min(parallel::detectCores()-1, n_imputations)
 )
 
 
