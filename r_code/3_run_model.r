@@ -43,7 +43,7 @@ mod_base_design_adjusted <- svyglm(
 
 ## Design adjusted
 
-mod_imp_survey_design_analytic_crude_list <- imp_survey_design_analytic_no_miss_list %>% 
+mod_imp_survey_design_analytic_crude_list <- imp_survey_design_analytic_no_miss_list |> 
   lapply(
     function(imp){
       
@@ -60,10 +60,10 @@ mod_imp_survey_design_analytic_crude_list <- imp_survey_design_analytic_no_miss_
     }
   )
 
-mod_imp_survey_design_adjusted_crude_pooled <- mod_imp_survey_design_analytic_crude_list %>% 
+mod_imp_survey_design_adjusted_crude_pooled <- mod_imp_survey_design_analytic_crude_list |> 
   mice::pool()
 
-mod_imp_survey_design_analytic_list <- imp_survey_design_analytic_no_miss_list %>% 
+mod_imp_survey_design_analytic_list <- imp_survey_design_analytic_no_miss_list |> 
   lapply(
     function(imp){
       
@@ -80,7 +80,7 @@ mod_imp_survey_design_analytic_list <- imp_survey_design_analytic_no_miss_list %
     }
   )
 
-mod_imp_survey_design_adjusted_pooled <- mod_imp_survey_design_analytic_list %>% 
+mod_imp_survey_design_adjusted_pooled <- mod_imp_survey_design_analytic_list |> 
   mice::pool()
 
 
@@ -101,13 +101,13 @@ result_mod_base_design_adjusted <- tbl_regression(
   exponentiate = TRUE
 )
 
-mod_imp_survey_design_adjusted_crude_pooled %>% 
+mod_imp_survey_design_adjusted_crude_pooled |> 
   summary(
     exponentiate = TRUE,
     conf.int = TRUE
   )
 
-mod_imp_survey_design_adjusted_pooled %>% 
+mod_imp_survey_design_adjusted_pooled |> 
   summary(
     exponentiate = TRUE,
     conf.int = TRUE
@@ -121,8 +121,8 @@ mod_imp_survey_design_adjusted_pooled %>%
 gof_mod_base_design_unadjusted_roc <- WeightedROC::WeightedROC(
   guess = predict(mod_base_design_unadjusted, type = "response"),
   label = dat_analytic_no_miss$copd_or_others
-) %>% 
-  as_tibble() %>% 
+) |> 
+  as_tibble() |> 
   add_column(
     model = "Unadjusted",
     .before = 1
@@ -132,8 +132,8 @@ gof_mod_base_design_adjusted_crude_roc <- WeightedROC::WeightedROC(
   guess = predict(mod_base_design_adjusted_crude, type = "response"),
   label = dat_analytic_no_miss$copd_or_others,
   weight = dat_analytic_no_miss$interview_wt_adj
-) %>% 
-  as_tibble() %>% 
+) |> 
+  as_tibble() |> 
   add_column(
     model = "Adjusted - Crude",
     .before = 1
@@ -143,8 +143,8 @@ gof_mod_base_design_adjusted_roc <- WeightedROC::WeightedROC(
   guess = predict(mod_base_design_adjusted, type = "response"),
   label = dat_analytic_no_miss$copd_or_others,
   weight = dat_analytic_no_miss$interview_wt_adj
-) %>% 
-  as_tibble() %>% 
+) |> 
+  as_tibble() |> 
   add_column(
     model = "Adjusted",
     .before = 1
@@ -158,7 +158,7 @@ gof_dat_all_mod_roc <- bind_rows(
 
 ## Plot the ROC curves
 
-gof_plot_all_mod <- gof_dat_all_mod_roc %>% 
+gof_plot_all_mod <- gof_dat_all_mod_roc |> 
   ggplot(
     aes(
       x = FPR,

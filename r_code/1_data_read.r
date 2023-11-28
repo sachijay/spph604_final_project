@@ -99,7 +99,7 @@ dat_17_diabetes_raw <- haven::read_xpt(
 ## 
 ## Notes: Ignored age - months
 
-dat_15_demographic <- dat_15_demographic_raw %>% 
+dat_15_demographic <- dat_15_demographic_raw |> 
   select(
     subject_id = SEQN,
     cycle = SDDSRVYR,
@@ -108,7 +108,7 @@ dat_15_demographic <- dat_15_demographic_raw %>%
     psu = SDMVPSU,
     stratum = SDMVSTRA,
     interview_wt = WTINT2YR
-  ) %>% 
+  ) |> 
   mutate(
     sex = fct_case_when(
       sex == 1 ~ "Male",
@@ -116,7 +116,7 @@ dat_15_demographic <- dat_15_demographic_raw %>%
     )
   )
 
-dat_17_demographic <- dat_17_demographic_raw %>% 
+dat_17_demographic <- dat_17_demographic_raw |> 
   select(
     subject_id = SEQN,
     cycle = SDDSRVYR,
@@ -125,7 +125,7 @@ dat_17_demographic <- dat_17_demographic_raw %>%
     psu = SDMVPSU,
     stratum = SDMVSTRA,
     interview_wt = WTINTPRP
-  ) %>% 
+  ) |> 
   mutate(
     sex = fct_case_when(
       sex == 1 ~ "Male",
@@ -142,7 +142,7 @@ dat_17_demographic <- dat_17_demographic_raw %>%
 ##    * MCQ300B - Close relative had asthma?
 ##    * MCQ050 - Emergency care visit for asthma/past yr (for exposure)
 ##    * MCQ220 & MCQ230A/MCQ230B/MCQ230C/MCQ230D - What kind of cancer
-dat_15_medical_conditions <- dat_15_medical_conditions_raw %>% 
+dat_15_medical_conditions <- dat_15_medical_conditions_raw |> 
   select(
     subject_id = SEQN,
     asthma = MCQ010,
@@ -151,7 +151,7 @@ dat_15_medical_conditions <- dat_15_medical_conditions_raw %>%
     asthma_ed_visits_year = MCQ050,
     cancer_diagnosis = MCQ220,
     cancer_type_1 = MCQ230A, cancer_type_2 = MCQ230B, cancer_type_3 = MCQ230C, cancer_type_4 = MCQ230D
-  ) %>% 
+  ) |> 
   mutate(
     asthma = fct_case_when( ## Refused and don't know as NA
       asthma == 1 ~ "Yes", 
@@ -177,7 +177,7 @@ dat_15_medical_conditions <- dat_15_medical_conditions_raw %>%
     .keep = "unused"
   )
 
-dat_17_medical_conditions <- dat_17_medical_conditions_raw %>% 
+dat_17_medical_conditions <- dat_17_medical_conditions_raw |> 
   select(
     subject_id = SEQN,
     asthma = MCQ010,
@@ -186,7 +186,7 @@ dat_17_medical_conditions <- dat_17_medical_conditions_raw %>%
     asthma_ed_visits_year = MCQ050,
     cancer_diagnosis = MCQ220,
     cancer_type_1 = MCQ230A, cancer_type_2 = MCQ230B, cancer_type_3 = MCQ230C, cancer_type_4 = MCQ230D
-  ) %>% 
+  ) |> 
   mutate(
     asthma = fct_case_when( ## Refused and don't know as NA
       asthma == 1 ~ "Yes", 
@@ -218,11 +218,11 @@ dat_17_medical_conditions <- dat_17_medical_conditions_raw %>%
 ##    * SEQN - Respondent sequence number
 ##    * HUQ051 - # times receive healthcare over past year
 
-dat_15_access_to_care <- dat_15_access_to_care_raw %>% 
+dat_15_access_to_care <- dat_15_access_to_care_raw |> 
   select(
     subject_id = SEQN,
     n_times_healthcare_visit = HUQ051
-  ) %>% 
+  ) |> 
   mutate(
     n_times_healthcare_visit = fct_case_when( ## Refused and don't know as NA
       n_times_healthcare_visit == 0 ~ "None",
@@ -238,11 +238,11 @@ dat_15_access_to_care <- dat_15_access_to_care_raw %>%
     .keep = "unused"
   )
 
-dat_17_access_to_care <- dat_17_access_to_care_raw %>% 
+dat_17_access_to_care <- dat_17_access_to_care_raw |> 
   select(
     subject_id = SEQN,
     n_times_healthcare_visit = HUQ051
-  ) %>% 
+  ) |> 
   mutate(
     n_times_healthcare_visit = fct_case_when( ## Refused and don't know as NA
       n_times_healthcare_visit == 0 ~ "None",
@@ -264,11 +264,11 @@ dat_17_access_to_care <- dat_17_access_to_care_raw %>%
 ##    * SEQN - Respondent sequence number
 ##    * HIQ011 - Covered by health insurance
 
-dat_15_insurance <- dat_15_insurance_raw %>% 
+dat_15_insurance <- dat_15_insurance_raw |> 
   select(
     subject_id = SEQN,
     has_insurance = HIQ011
-  ) %>% 
+  ) |> 
   mutate(
     has_insurance = fct_case_when( ## Refused and don't know as NA
       has_insurance == 1 ~ "Yes",
@@ -276,11 +276,11 @@ dat_15_insurance <- dat_15_insurance_raw %>%
     )
   )
 
-dat_17_insurance <- dat_17_insurance_raw %>% 
+dat_17_insurance <- dat_17_insurance_raw |> 
   select(
     subject_id = SEQN,
     has_insurance = HIQ011
-  ) %>% 
+  ) |> 
   mutate(
     has_insurance = fct_case_when( ## Refused and don't know as NA
       has_insurance == 1 ~ "Yes",
@@ -297,19 +297,19 @@ dat_17_insurance <- dat_17_insurance_raw %>%
 ##    * SMD470 - # of people who smoke inside this home? (from household smokers)
 
 dat_15_smoking <- full_join(
-  dat_15_smoking_raw %>% 
+  dat_15_smoking_raw |> 
     select(
       subject_id = SEQN,
       smoked_100_life = SMQ020,
       smoking_now = SMQ040
     ),
-  dat_15_smoking_household_raw %>% 
+  dat_15_smoking_household_raw |> 
     select(
       subject_id = SEQN,
       num_smoke_inside = SMD470
     ),
   by = "subject_id"
-) %>% 
+) |> 
   mutate(
     smoking_status = fct_case_when( ## Refused and don't know as NA
       smoking_now %in% c(1, 2) ~ "Current smokers",
@@ -324,19 +324,19 @@ dat_15_smoking <- full_join(
   )
 
 dat_17_smoking <- full_join(
-  dat_17_smoking_raw %>% 
+  dat_17_smoking_raw |> 
     select(
       subject_id = SEQN,
       smoked_100_life = SMQ020,
       smoking_now = SMQ040
     ),
-  dat_17_smoking_household_raw %>% 
+  dat_17_smoking_household_raw |> 
     select(
       subject_id = SEQN,
       num_smoke_inside = SMD470
     ),
   by = "subject_id"
-) %>% 
+) |> 
   mutate(
     smoking_status = fct_case_when( ## Refused and don't know as NA
       smoking_now %in% c(1, 2) ~ "Current smokers",
@@ -356,11 +356,11 @@ dat_17_smoking <- full_join(
 ##    * SEQN - Respondent sequence number
 ##    * DIQ010 - Doctor told you have diabetes
 
-dat_15_diabetes <- dat_15_diabetes_raw %>% 
+dat_15_diabetes <- dat_15_diabetes_raw |> 
   select(
     subject_id = SEQN,
     have_diabetes = DIQ010
-  ) %>% 
+  ) |> 
   mutate(
     have_diabetes = fct_case_when( ## Refused and don't know as NA
       have_diabetes == 1 ~ "Yes",
@@ -369,11 +369,11 @@ dat_15_diabetes <- dat_15_diabetes_raw %>%
     )
   )
 
-dat_17_diabetes <- dat_17_diabetes_raw %>% 
+dat_17_diabetes <- dat_17_diabetes_raw |> 
   select(
     subject_id = SEQN,
     have_diabetes = DIQ010
-  ) %>% 
+  ) |> 
   mutate(
     have_diabetes = fct_case_when( ## Refused and don't know as NA
       have_diabetes == 1 ~ "Yes",
@@ -385,48 +385,48 @@ dat_17_diabetes <- dat_17_diabetes_raw %>%
 
 ## Combine the data into a single dataset ####
 
-dat_15 <- dat_15_demographic %>% 
+dat_15 <- dat_15_demographic |> 
   full_join(
     dat_15_medical_conditions,
     by = "subject_id"
-  ) %>% 
+  ) |> 
   full_join(
     dat_15_access_to_care,
     by = "subject_id"
-  ) %>% 
+  ) |> 
   full_join(
     dat_15_insurance,
     by = "subject_id"
-  ) %>% 
+  ) |> 
   full_join(
     dat_15_diabetes,
     by = "subject_id"
-  ) %>% 
+  ) |> 
   full_join(
     dat_15_smoking,
     by = "subject_id"
-  ) %>% 
+  ) |> 
   mutate(
     interview_wt_adj = 2*interview_wt/5.2
   )
 
-dat_17 <- dat_17_demographic %>% 
+dat_17 <- dat_17_demographic |> 
   full_join(
     dat_17_medical_conditions,
     by = "subject_id"
-  ) %>% 
+  ) |> 
   full_join(
     dat_17_access_to_care,
     by = "subject_id"
-  ) %>% 
+  ) |> 
   full_join(
     dat_17_insurance,
     by = "subject_id"
-  ) %>% 
+  ) |> 
   full_join(
     dat_17_diabetes,
     by = "subject_id"
-  ) %>% 
+  ) |> 
   full_join(
     dat_17_smoking,
     by = "subject_id"
@@ -435,7 +435,7 @@ dat_17 <- dat_17_demographic %>%
 dat_combined <- bind_rows(
   dat_15,
   dat_17
-) %>% 
+) |> 
   mutate(
     interview_wt_adj = 3*interview_wt/5.2
   )
@@ -444,7 +444,7 @@ dat_combined <- bind_rows(
 ## Apply exclusion criteria ####
 
 ## Full dataset (used to setup the survey design)
-dat_full <- dat_combined %>% ## 25,531 records
+dat_full <- dat_combined |> ## 25,531 records
   mutate(
     asthma_inclusion = asthma %in% "Yes", ## 3,765 records remaining
     age_inclusion = age_years >= 20 & age_years < 80, ## 2,172 records remaining
@@ -455,28 +455,28 @@ dat_full <- dat_combined %>% ## 25,531 records
   )
 
 ## Complete dataset (not used when using survey designs!!!!)
-dat_analytic_no_miss <- dat_full %>% 
+dat_analytic_no_miss <- dat_full |> 
   filter(
     !exclude
-  ) %>% 
+  ) |> 
   drop_na(
     copd_or_others, has_insurance, n_times_healthcare_visit, smoking_status, num_smoke_inside, have_diabetes, age_years, sex
-  ) %>%
-  droplevels.data.frame() %>% 
+  ) |>
+  droplevels.data.frame() |> 
   mutate(
     is_complete = TRUE
   )
 
-dat_full <- dat_full %>% 
+dat_full <- dat_full |> 
   mutate(
     is_complete = subject_id %in% dat_analytic_no_miss$subject_id
   )
 
 ## Analytic dataset (not used when using survey designs!!!!)
-dat_analytic <- dat_full %>% 
+dat_analytic <- dat_full |> 
   filter(
     !exclude
-  ) %>%
+  ) |>
   droplevels.data.frame()
 
 
@@ -505,7 +505,7 @@ survey_design_no_miss <- subset(
 
 
 ## Change variable labels ####
-dat_analytic <- dat_analytic %>% 
+dat_analytic <- dat_analytic |> 
   labelled::set_variable_labels(
     copd_or_others = "Have/Had COPD",
     has_insurance = "Has insurance",
@@ -520,7 +520,7 @@ dat_analytic <- dat_analytic %>%
     have_diabetes = "Has diabetes"
   )
 
-dat_analytic_no_miss <- dat_analytic_no_miss %>% 
+dat_analytic_no_miss <- dat_analytic_no_miss |> 
   labelled::set_variable_labels(
     copd_or_others = "Have/Had COPD",
     has_insurance = "Has insurance",
@@ -535,7 +535,7 @@ dat_analytic_no_miss <- dat_analytic_no_miss %>%
     have_diabetes = "Has diabetes"
   )
 
-survey_design_analytic$variables <- survey_design_analytic$variables %>% 
+survey_design_analytic$variables <- survey_design_analytic$variables |> 
   labelled::set_variable_labels(
     copd_or_others = "Have/Had COPD",
     has_insurance = "Has insurance",
@@ -550,7 +550,7 @@ survey_design_analytic$variables <- survey_design_analytic$variables %>%
     have_diabetes = "Has diabetes"
   )
 
-survey_design_no_miss$variables <- survey_design_no_miss$variables %>% 
+survey_design_no_miss$variables <- survey_design_no_miss$variables |> 
   labelled::set_variable_labels(
     copd_or_others = "Have/Had COPD",
     has_insurance = "Has insurance",
@@ -619,16 +619,16 @@ imp_result <- mice::futuremice(
 
 ### Prep the imputation data ####
 
-imp_dat_long <- imp_result %>% 
+imp_dat_long <- imp_result |> 
   complete(
     action = "long"
-  ) %>% 
-  as_tibble() %>% 
+  ) |> 
+  as_tibble() |> 
   select(
     !.id
   )
 
-dat_excluded <- dat_full %>% 
+dat_excluded <- dat_full |> 
   filter(
     exclude
   )
@@ -638,11 +638,11 @@ imp_dat_full_list <- lapply(
   function(imp_no){
     
     bind_rows(
-      imp_dat_long %>% 
+      imp_dat_long |> 
         filter(
           .imp == imp_no
         ),
-      dat_excluded %>% 
+      dat_excluded |> 
         add_column(
           .imp = imp_no,
           .before = 1
@@ -655,7 +655,7 @@ imp_dat_full_list <- lapply(
 
 ### Setup survey designs with imputed data ####
 
-imp_survey_design_analytic_no_miss_list <- imp_dat_full_list %>% 
+imp_survey_design_analytic_no_miss_list <- imp_dat_full_list |> 
   lapply(
     function(imp_dat){
       

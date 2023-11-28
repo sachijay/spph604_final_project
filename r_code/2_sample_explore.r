@@ -17,8 +17,8 @@ load(
 ## Note: Should tell if a variable is not matched at all 
 ##        between the cycles
 
-dat_analytic %>% 
-  get_n_missing_df() %>% 
+dat_analytic |> 
+  get_n_missing_df() |> 
   print(
     n = 25
   )
@@ -26,32 +26,32 @@ dat_analytic %>%
 
 ## Explore counts in other variables ####
 
-dat_analytic %>%
+dat_analytic |>
   count(
     asthma
   )
 
-dat_analytic %>%
+dat_analytic |>
   count(
     has_insurance
   )
 
-dat_analytic %>%
+dat_analytic |>
   count(
     has_insurance
   )
 
-dat_analytic %>%
+dat_analytic |>
   count(
     copd_or_others
   )
 
-dat_analytic %>%
+dat_analytic |>
   count(
     copd_or_others
   )
 
-dat_analytic %>%
+dat_analytic |>
   count(
     copd_or_others,
     has_insurance
@@ -62,11 +62,11 @@ dat_analytic %>%
 
 ### Ignoring sampling weights ####
 
-dat_analytic_table1 <- dat_analytic %>% 
+dat_analytic_table1 <- dat_analytic |> 
   mutate(
-    num_smoke_inside = num_smoke_inside %>% 
+    num_smoke_inside = num_smoke_inside |> 
       as.factor(),
-  ) %>% 
+  ) |> 
   labelled::set_variable_labels(
     num_smoke_inside = "No. of people who smoke inside"
   )
@@ -89,10 +89,10 @@ tab_1_design_unadjusted <- tbl_summary(
   ),
   missing = "ifany",
   missing_text = "Missing"
-) %>% 
+) |> 
   add_overall(
     last = FALSE
-  ) %>% 
+  ) |> 
   modify_header(
     label = "**Characteristic**",
     stat_0 = "**Overall** (n=2,154)",
@@ -105,11 +105,11 @@ tab_1_design_unadjusted <- tbl_summary(
 
 survey_design_table1 <- survey_design_analytic
 
-survey_design_table1$variables <- survey_design_table1$variables %>% 
+survey_design_table1$variables <- survey_design_table1$variables |> 
   mutate(
-    num_smoke_inside = num_smoke_inside %>% 
+    num_smoke_inside = num_smoke_inside |> 
       as.factor(),
-  ) %>% 
+  ) |> 
   labelled::set_variable_labels(
     num_smoke_inside = "No. of people who smoke inside"
   )
@@ -133,10 +133,10 @@ tab_1_design_adjusted <- tbl_svysummary(
   ),
   missing = "ifany",
   missing_text = "Missing"
-) %>% 
+) |> 
   add_overall(
     last = FALSE
-  ) %>% 
+  ) |> 
   modify_header(
     label = "**Characteristic**",
     stat_0 = "**Overall** (n=2,154)",
@@ -148,11 +148,11 @@ tab_1_design_adjusted <- tbl_svysummary(
 ## Save table 1 to file ####
 
 list(
-  unadjusted = tab_1_design_unadjusted %>% 
+  unadjusted = tab_1_design_unadjusted |> 
     as_tibble(),
-  adjusted = tab_1_design_adjusted %>% 
+  adjusted = tab_1_design_adjusted |> 
     as_tibble()
-) %>% 
+) |> 
   writexl::write_xlsx(
     path = here::here("results", "table_1.xlsx")
   )
