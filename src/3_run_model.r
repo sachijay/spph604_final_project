@@ -19,7 +19,7 @@ load(
 
 ## Non-design adjusted
 mod_base_design_unadjusted <- glm(
-  copd_or_others ~ has_insurance + n_times_healthcare_visit + smoking_status + num_smoke_inside + have_diabetes + age_years + sex,
+  copd_or_others ~ has_insurance + age_years + sex + income_ratio + smoking_status + num_smoke_inside + have_diabetes,
   data = dat_analytic_no_miss,
   family = binomial(link = "logit")
 )
@@ -33,7 +33,7 @@ mod_base_design_adjusted_crude <- svyglm(
 )
 
 mod_base_design_adjusted <- svyglm(
-  copd_or_others ~ has_insurance + n_times_healthcare_visit + smoking_status + num_smoke_inside + have_diabetes + age_years + sex,
+  copd_or_others ~ has_insurance + age_years + sex + income_ratio + smoking_status + num_smoke_inside + have_diabetes,
   design = survey_design_no_miss,
   family = binomial(link = "logit")
 )
@@ -68,7 +68,7 @@ mod_imp_survey_design_analytic_list <- imp_survey_design_analytic_no_miss_list |
     function(imp){
       
       mod_imp_i_base_design_adjusted <- svyglm(
-        copd_or_others ~ has_insurance + n_times_healthcare_visit + smoking_status + num_smoke_inside + have_diabetes + age_years + sex,
+        copd_or_others ~ has_insurance + age_years + sex + income_ratio + smoking_status + num_smoke_inside + have_diabetes,
         design = imp$analytic,
         family = binomial(link = "logit")
       )
@@ -273,7 +273,7 @@ n_imputations <- imp_dat_full_list |>
   length()
 
 1:n_imputations |> 
-  lapply(
+  sapply(
     function(imp_no){
       
       mod_fit_imp_no <- mod_imp_survey_design_analytic_list[[imp_no]]

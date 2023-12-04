@@ -62,23 +62,16 @@ dat_analytic |>
 
 ### Ignoring sampling weights ####
 
-dat_analytic_table1 <- dat_analytic |> 
-  mutate(
-    num_smoke_inside = num_smoke_inside |> 
-      as.factor(),
-  ) |> 
-  labelled::set_variable_labels(
-    num_smoke_inside = "No. of people who smoke inside"
-  )
+dat_analytic_table1 <- dat_analytic ## For future flexibility
 
 tab_1_design_unadjusted <- tbl_summary(
-  data = dat_analytic_table1,
+  data = dat_analytic,
   by = copd_or_others,
-  include = c(has_insurance, age_years, sex, n_times_healthcare_visit, lung_cancer, smoking_status, num_smoke_inside, have_diabetes),
+  include = c(has_insurance, age_years, sex, income_ratio, lung_cancer, smoking_status, num_smoke_inside, have_diabetes),
   percent = "column",
   statistic = list(
     all_continuous() ~ "{median} ({p25}, {p75})",
-    all_categorical() ~ "{n} ({p}%)"
+    all_categorical() ~ "{n}"
   ),
   type = list(
     where(is.factor) ~ "categorical" ## To show both levels of dichotomous variables
@@ -103,22 +96,12 @@ tab_1_design_unadjusted <- tbl_summary(
 
 ### Using sampling weights ####
 
-survey_design_table1 <- survey_design_analytic
-
-survey_design_table1$variables <- survey_design_table1$variables |> 
-  mutate(
-    num_smoke_inside = num_smoke_inside |> 
-      as.factor(),
-  ) |> 
-  labelled::set_variable_labels(
-    num_smoke_inside = "No. of people who smoke inside"
-  )
-
+survey_design_table1 <- survey_design_analytic ## For future flexibility
 
 tab_1_design_adjusted <- tbl_svysummary(
   data = survey_design_table1,
   by = copd_or_others,
-  include = c(has_insurance, age_years, sex, n_times_healthcare_visit, lung_cancer, smoking_status, num_smoke_inside, have_diabetes),
+  include = c(has_insurance, age_years, sex, income_ratio, lung_cancer, smoking_status, num_smoke_inside, have_diabetes),
   percent = "column",
   statistic = list(
     all_continuous() ~ "{median} ({p25}, {p75})",

@@ -93,6 +93,7 @@ dat_17_diabetes_raw <- haven::read_xpt(
 ##    * SDDSRVYR - Data release cycle
 ##    * RIAGENDR - Gender
 ##    * RIDAGEYR - Age in years at screening
+##    * INDFMPIR - Ratio of family income to poverty guidelines.
 ##    * SDMVPSU - Pseudo PSU
 ##    * SDMVSTRA - Pseudo stratum
 ##    * WTINTPRP (2017-2020) or WTINT2YR (2015-2016) - Full sample 2 year interview weight
@@ -105,6 +106,7 @@ dat_15_demographic <- dat_15_demographic_raw |>
     cycle = SDDSRVYR,
     sex = RIAGENDR, 
     age_years = RIDAGEYR,
+    income_ratio = INDFMPIR,
     psu = SDMVPSU,
     stratum = SDMVSTRA,
     interview_wt = WTINT2YR
@@ -122,6 +124,7 @@ dat_17_demographic <- dat_17_demographic_raw |>
     cycle = SDDSRVYR,
     sex = RIAGENDR, 
     age_years = RIDAGEYR,
+    income_ratio = INDFMPIR,
     psu = SDMVPSU,
     stratum = SDMVSTRA,
     interview_wt = WTINTPRP
@@ -460,7 +463,7 @@ dat_analytic_no_miss <- dat_full |>
     !exclude
   ) |> 
   drop_na(
-    copd_or_others, has_insurance, n_times_healthcare_visit, smoking_status, num_smoke_inside, have_diabetes, age_years, sex
+    age_years, sex, income_ratio, smoking_status, num_smoke_inside, have_diabetes
   ) |>
   droplevels.data.frame() |> 
   mutate(
@@ -511,6 +514,7 @@ dat_analytic <- dat_analytic |>
     has_insurance = "Has insurance",
     age_years = "Age (years)",
     sex = "Sex",
+    income_ratio = "Income ratio",
     relative_asthma = "Close relative with asthma",
     asthma_ed_visits_year = "ED visits for asthma/past yr",
     n_times_healthcare_visit = "No. of healthcare visits",
@@ -526,6 +530,7 @@ dat_analytic_no_miss <- dat_analytic_no_miss |>
     has_insurance = "Has insurance",
     age_years = "Age (years)",
     sex = "Sex",
+    income_ratio = "Income ratio",
     relative_asthma = "Close relative with asthma",
     asthma_ed_visits_year = "ED visits for asthma/past yr",
     n_times_healthcare_visit = "No. of healthcare visits",
@@ -541,6 +546,7 @@ survey_design_analytic$variables <- survey_design_analytic$variables |>
     has_insurance = "Has insurance",
     age_years = "Age (years)",
     sex = "Sex",
+    income_ratio = "Income ratio",
     relative_asthma = "Close relative with asthma",
     asthma_ed_visits_year = "ED visits for asthma/past yr",
     n_times_healthcare_visit = "No. of healthcare visits",
@@ -573,12 +579,13 @@ impute_vars <- c(
   "have_diabetes",
   "smoking_status",
   "n_times_healthcare_visit",
-  "num_smoke_inside"
+  "num_smoke_inside",
+  "income_ratio"
 )
 
 impute_exclude_aux_vars <- c(
   "asthma", ## Constant
-  "asthma_ed_visits_year", ## Contains a high % of missing values
+  "asthma_ed_visits_year", "num_smoke_inside", ## Contains a high % of missing values
   "subject_id",
   "interview_wt", 
   "asthma_inclusion", 
