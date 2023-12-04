@@ -2,7 +2,7 @@
 ## Read other scripts ####
 
 source(
-  file = here::here("r_code", "0_main.r")
+  file = here::here("src", "0_main.r")
 )
 
 
