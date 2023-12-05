@@ -10,8 +10,8 @@ This study addresses the research question, "Is there an association between any
 ## File structure
 
 - `R` source code in [`src`](src)  
-    - [`0_main.r`](r_code/0_main.r) - Install and load necessary packages  
-    - [`1_data_read.r`](r_code/1_data_read.r) - Read, clean and save the data required for the project. This file also includes code to perform imputation and use survey design features
-    - [`2_sample_explore.r`](r_code/2_sample_explore.r) - Explore the sample and generate Table 1
-    - [`3_run_model.r`](r_code/3_run_model.r) - Run the logistic regression model
+    - [`0_main.r`](src/0_main.r) - Install and load necessary packages  
+    - [`1_data_read.r`](src/1_data_read.r) - Read, clean and save the data required for the project. This file also includes code to perform imputation and use survey design features
+    - [`2_sample_explore.r`](src/2_sample_explore.r) - Explore the sample and generate Table 1
+    - [`3_run_model.r`](src/3_run_model.r) - Run the logistic regression model
     
