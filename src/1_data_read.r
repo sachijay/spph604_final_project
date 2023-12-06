@@ -658,7 +658,7 @@ imp_dat_full_list <- lapply(
   1:n_imputations, 
   function(imp_no){
     
-    bind_rows(
+    out <- bind_rows(
       imp_dat_long |> 
         filter(
           .imp == imp_no
@@ -669,6 +669,8 @@ imp_dat_full_list <- lapply(
           .before = 1
         )
     )
+    
+    return(out)
     
   }
 )
