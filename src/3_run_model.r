@@ -13,105 +13,112 @@ load(
 )
 
 
-## Run model ####
+## Run models ####
 
-### Base - complete case ####
-
-## Non-design adjusted
-mod_base_design_unadjusted <- glm(
-  copd_or_others ~ has_insurance + age_years + sex + income_ratio + smoking_status + num_smoke_inside + have_diabetes,
-  data = dat_analytic_no_miss,
-  family = binomial(link = "logit")
+mod_formula <- c(
+  "crude" = "copd_or_others ~ has_insurance", ## Crude
+  "min_adj_set" = "copd_or_others ~ has_insurance + age_years + sex + income_ratio + smoking_status + num_smoke_inside + have_diabetes", ## Minimal adjustment set
+  "mdc" = "copd_or_others ~ has_insurance + age_years + sex + income_ratio + have_diabetes" ## Modified disjunctive criterion
 )
 
 
-## Design adjusted
-mod_base_design_adjusted_crude <- svyglm(
-  copd_or_others ~ has_insurance,
-  design = survey_design_no_miss,
-  family = binomial(link = "logit")
-)
+### Complete case ####
 
-mod_base_design_adjusted <- svyglm(
-  copd_or_others ~ has_insurance + age_years + sex + income_ratio + smoking_status + num_smoke_inside + have_diabetes,
-  design = survey_design_no_miss,
-  family = binomial(link = "logit")
-)
-
-
-### Base - multiple imputation ####
-
-## Design adjusted
-
-mod_imp_survey_design_analytic_crude_list <- imp_survey_design_analytic_no_miss_list |> 
+mod_all_complete <- mod_formula |> 
   lapply(
-    function(imp){
+    function(form){
       
-      mod_imp_i_base_design_adjusted <- svyglm(
-        copd_or_others ~ has_insurance,
-        design = imp$analytic,
+      out <- svyglm(
+        as.formula(form),
+        design = survey_design_no_miss,
         family = binomial(link = "logit")
       )
       
-      return(
-        mod_imp_i_base_design_adjusted
-      )
+      return(out)
       
     }
   )
 
-mod_imp_survey_design_adjusted_crude_pooled <- mod_imp_survey_design_analytic_crude_list |> 
-  mice::pool()
 
-mod_imp_survey_design_analytic_list <- imp_survey_design_analytic_no_miss_list |> 
-  lapply(
-    function(imp){
-      
-      mod_imp_i_base_design_adjusted <- svyglm(
-        copd_or_others ~ has_insurance + age_years + sex + income_ratio + smoking_status + num_smoke_inside + have_diabetes,
-        design = imp$analytic,
-        family = binomial(link = "logit")
-      )
-      
-      return(
-        mod_imp_i_base_design_adjusted
-      )
-      
-    }
-  )
+### Multiple imputation ####
 
-mod_imp_survey_design_adjusted_pooled <- mod_imp_survey_design_analytic_list |> 
-  mice::pool()
+n_imputations <- imp_dat_full_list |> 
+  length() ## Added here, used later
+
+mod_all_mi <- lapply(
+  mod_formula,
+  function(form){
+
+    mod <- imp_survey_design_analytic_no_miss_list |>
+      lapply(
+        function(imp){
+
+          mod_imp_i <- svyglm(
+            as.formula(form),
+            design = imp$analytic,
+            family = binomial(link = "logit")
+          )
+
+          return(
+            mod_imp_i
+          )
+
+        }
+      )
+
+    pooled_est <- mod |>
+      mice::pool()
+
+    out <- list(
+      mod = mod,
+      pooled_est = pooled_est
+    )
+
+    return(out)
+
+  }
+)
 
 
 ## Prepare output tables ####
 
-result_mod_base_design_unadjusted <- tbl_regression(
-  mod_base_design_unadjusted,
-  exponentiate = TRUE
-)
+## Complete data 
 
-result_mod_base_design_adjusted_crude <- tbl_regression(
-  mod_base_design_adjusted_crude,
-  exponentiate = TRUE
-)
-
-result_mod_base_design_adjusted <- tbl_regression(
-  mod_base_design_adjusted,
-  exponentiate = TRUE
-)
-
-mod_imp_survey_design_adjusted_crude_pooled |> 
-  summary(
-    exponentiate = TRUE,
-    conf.int = TRUE
+mod_results_all_complete <- mod_all_complete |> 
+  lapply(
+    function(mod){
+      
+      out <- tbl_regression(
+        mod,
+        exponentiate = TRUE
+      ) |> 
+        as_tibble()
+      
+    }
   )
 
-mod_imp_survey_design_adjusted_pooled |> 
-  summary(
-    exponentiate = TRUE,
-    conf.int = TRUE
+names(mod_results_all_complete) <- paste0("est_complete_", names(mod_results_all_complete))
+
+
+## Multiple imputation
+
+mod_results_all_mi <- mod_all_mi |> 
+  lapply(
+    function(mod){
+      
+      out <- mod$pooled_est |> 
+        summary(
+          exponentiate = TRUE,
+          conf.int = TRUE
+        )
+      
+      return(out)
+      
+    }
   )
+
+names(mod_results_all_mi) <- paste0("est_mi_", names(mod_results_all_mi))
+
 
 
 ## Model diagnostics ####
@@ -225,11 +232,11 @@ al_gof <- function(
     )
     
   }
-
+  
   decilemodel <- svyglm(
     r ~ g, 
     design = newdesign
-    )
+  )
   
   res <- survey::regTermTest(decilemodel, ~g)
   
@@ -269,8 +276,6 @@ gof_mod_base_design_adjusted_al <- al_gof(
 
 ### For imputed data ####
 
-n_imputations <- imp_dat_full_list |> 
-  length()
 
 1:n_imputations |> 
   sapply(
