@@ -574,6 +574,20 @@ survey_design_no_miss$variables <- survey_design_no_miss$variables |>
 
 ## Multiple imputation ####
 
+## Check if MAR/MCAR
+
+dat_analytic |> 
+  select(
+    copd_or_others, has_insurance,
+    age_years,
+    income_ratio,
+    smoking_status,
+    num_smoke_inside,
+    have_diabetes
+  ) |> 
+  RBtest::RBtest() ## 0: MCAR, 1: MAR, -1: complete
+
+
 ## Variables used in the model
 impute_vars <- c(
   "have_diabetes",

@@ -1,7 +1,7 @@
 ## Main file for the project
 
 ## Install missing packages ####
-cran_pkgs <- c("devtools", "tidyverse", "here", "labelled", "survey", "mice", "furrr", "gtsummary", "WeightedROC")
+cran_pkgs <- c("devtools", "tidyverse", "here", "labelled", "survey", "RBtest", "mice", "furrr", "gtsummary", "WeightedROC")
 if(length(missing_pkgs <- setdiff(cran_pkgs, row.names(utils::installed.packages()))) > 0){
   
   message("Installing missing package(s): ",
@@ -20,7 +20,6 @@ rm(cran_pkgs, missing_pkgs)
 ## Install custom packages (UNCOMMENT IF NOT INSTALLED!!!!!!!!)
 
 # devtools::install_github("sachijay/miscr")
-
 
 ## Load libraries ####
 
