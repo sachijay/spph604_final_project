@@ -92,7 +92,10 @@ mod_results_all_complete <- mod_all_complete |>
         mod,
         exponentiate = TRUE
       ) |> 
-        as_tibble()
+        as_tibble() |> 
+        mutate(
+          est_ci = paste0(`**OR**`, " (", `**95% CI**`, ")")
+        )
       
     }
   )
@@ -110,6 +113,10 @@ mod_results_all_mi <- mod_all_mi |>
         summary(
           exponentiate = TRUE,
           conf.int = TRUE
+        ) |> 
+        as_tibble() |> 
+        mutate(
+          est_ci = miscr:::get_num1_num2_num3_txt(estimate, `2.5 %`, `97.5 %`, .output_digits = 2)
         )
       
       return(out)
