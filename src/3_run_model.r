@@ -17,8 +17,8 @@ load(
 
 mod_formula <- c(
   "crude" = "copd_or_others ~ has_insurance", ## Crude
-  "min_adj_set" = "copd_or_others ~ has_insurance + age_years + sex + income_ratio + smoking_status + num_smoke_inside + have_diabetes", ## Minimal adjustment set
-  "mdc" = "copd_or_others ~ has_insurance + age_years + sex + income_ratio + have_diabetes" ## Modified disjunctive criterion
+  "mdc" = "copd_or_others ~ has_insurance + age_years + sex + income_ratio + smoking_status + num_smoke_inside + have_diabetes", ## Modified disjunctive criterion
+  "min_adj_set" = "copd_or_others ~ has_insurance + age_years + sex + income_ratio + have_diabetes" ## Minimal adjustment set
 )
 
 
@@ -125,47 +125,39 @@ names(mod_results_all_mi) <- paste0("est_mi_", names(mod_results_all_mi))
 
 ### ROC ####
 
-gof_mod_base_design_unadjusted_roc <- WeightedROC::WeightedROC(
-  guess = predict(mod_base_design_unadjusted, type = "response"),
-  label = dat_analytic_no_miss$copd_or_others
-) |> 
-  as_tibble() |> 
-  add_column(
-    model = "Unadjusted",
-    .before = 1
+## ROC for complete data
+
+gof_roc_all_complete <- mod_all_complete |> 
+  lapply(
+    function(mod){
+      
+      out <- WeightedROC::WeightedROC(
+        guess = predict(mod, type = "response"),
+        label = dat_analytic_no_miss$copd_or_others
+      ) |> 
+        as_tibble()
+      
+      return(out)
+      
+    }
   )
 
-gof_mod_base_design_adjusted_crude_roc <- WeightedROC::WeightedROC(
-  guess = predict(mod_base_design_adjusted_crude, type = "response"),
-  label = dat_analytic_no_miss$copd_or_others,
-  weight = dat_analytic_no_miss$interview_wt_adj
-) |> 
-  as_tibble() |> 
-  add_column(
-    model = "Adjusted - Crude",
-    .before = 1
+gof_roc_dat_all_complete <- gof_roc_all_complete |> 
+  bind_rows(
+    .id = "model"
+  ) |> 
+  mutate(
+    model = fct_case_when(
+      model == "crude" ~ "Crude",
+      model == "mdc" ~ "MDC",
+      model == "min_adj_set" ~ "Min. adj."
+    )
   )
 
-gof_mod_base_design_adjusted_roc <- WeightedROC::WeightedROC(
-  guess = predict(mod_base_design_adjusted, type = "response"),
-  label = dat_analytic_no_miss$copd_or_others,
-  weight = dat_analytic_no_miss$interview_wt_adj
-) |> 
-  as_tibble() |> 
-  add_column(
-    model = "Adjusted",
-    .before = 1
-  )
 
-gof_dat_all_mod_roc <- bind_rows(
-  gof_mod_base_design_adjusted_crude_roc,
-  gof_mod_base_design_adjusted_roc
-)
+## Plot the ROC curves for complete data
 
-
-## Plot the ROC curves
-
-gof_plot_all_mod <- gof_dat_all_mod_roc |> 
+gof_roc_plot_all_complete <- gof_roc_dat_all_complete |> 
   ggplot(
     aes(
       x = FPR,
@@ -181,19 +173,50 @@ gof_plot_all_mod <- gof_dat_all_mod_roc |>
   theme_classic()
 
 
-### Area under the curve (AUC) ####
+### AUC ####
 
-gof_mod_base_design_unadjusted_auc <- WeightedROC::WeightedAUC(
-  gof_mod_base_design_unadjusted_roc
-)
+## AUC for complete data
 
-gof_mod_base_design_adjusted_crude_auc <- WeightedROC::WeightedAUC(
-  gof_mod_base_design_adjusted_crude_roc
-)
+gof_auc_all_complete <- gof_roc_all_complete |> 
+  sapply(
+    WeightedROC::WeightedAUC
+  ) |> 
+  as_tibble(
+    rownames = "model"
+  )
 
-gof_mod_base_design_adjusted_auc <- WeightedROC::WeightedAUC(
-  gof_mod_base_design_adjusted_roc
-)
+
+## AUC for multiple imputation
+
+gof_auc_all_mi <- mod_all_mi |> 
+  lapply(
+    function(mod){
+      
+      out <- mod$mod |> 
+        sapply(
+          function(mod_imp_i){
+            
+            out <- WeightedROC::WeightedAUC(
+              WeightedROC::WeightedROC(
+                guess = predict(mod_imp_i, type = "response"),
+                label = dat_analytic$copd_or_others
+              )
+            )
+            
+            return(out)
+            
+          }
+        ) |> 
+        as_tibble()
+      
+      return(out)
+      
+    }
+  ) |> 
+  bind_rows(
+    .id = "model"
+  )
+
 
 
 ### Archer-Lemeshow goodness-of-fit test ####
@@ -247,55 +270,91 @@ al_gof <- function(
 }
 
 
-### For non-imputed data ####
+## AL for complete data
 
-gof_mod_base_design_unadjusted_al <- al_gof(
-  fit = mod_base_design_unadjusted, 
-  data = dat_analytic_no_miss,
-  psu = "psu", 
-  strata = "stratum",
-  weight = "interview_wt_adj"
-)
-
-gof_mod_base_design_adjusted_crude_al <- al_gof(
-  fit = mod_base_design_adjusted_crude, 
-  data = dat_analytic_no_miss,
-  psu = "psu", 
-  strata = "stratum",
-  weight = "interview_wt_adj"
-)
-
-gof_mod_base_design_adjusted_al <- al_gof(
-  fit = mod_base_design_adjusted, 
-  data = dat_analytic_no_miss,
-  psu = "psu", 
-  strata = "stratum",
-  weight = "interview_wt_adj"
-)
-
-
-### For imputed data ####
-
-
-1:n_imputations |> 
+gof_al_all_complete <- mod_all_complete |> 
   sapply(
-    function(imp_no){
+    function(mod){
       
-      mod_fit_imp_no <- mod_imp_survey_design_analytic_list[[imp_no]]
-      
-      imp_dat_imp_no <- imp_dat_full_list[[imp_no]] |> 
-        filter(
-          !exclude
-        )
-      
-      al_gof(
-        fit = mod_fit_imp_no, 
-        data = imp_dat_imp_no, 
+      out <- al_gof(
+        fit = mod, 
+        data = dat_analytic_no_miss,
         psu = "psu", 
         strata = "stratum",
         weight = "interview_wt_adj"
       )
       
+      return(out)
+      
     }
+  ) |> 
+  as_tibble(
+    rownames = "model"
   )
 
+
+## AL for multiple imputation
+
+gof_al_all_mi <- mod_all_mi |> 
+  lapply(
+    function(mod){
+      
+      out <- 1:n_imputations |> 
+        sapply(
+          function(imp_i){
+            
+            mod_imp_i <- mod$mod[[imp_i]]
+            
+            dat_imp_i <- imp_dat_full_list[[imp_i]] |> 
+              filter(!exclude)
+            
+            out <- al_gof(
+              fit = mod_imp_i, 
+              data = dat_imp_i,
+              psu = "psu", 
+              strata = "stratum",
+              weight = "interview_wt_adj"
+            )
+            
+            return(out)
+            
+          }
+        ) |> 
+        as_tibble()
+      
+      return(out)
+      
+    }
+  ) |> 
+  bind_rows(
+    .id = "model"
+  )
+
+
+
+## Save results ####
+
+## ROC plot
+
+ggsave(
+  filename = here::here("figures", "roc_all_complete.png"),
+  plot = gof_roc_plot_all_complete
+)
+
+
+## Other results
+
+c(
+  mod_results_all_complete,
+  mod_results_all_mi,
+  list(
+    gof_auc_complete = gof_auc_all_complete,
+    gof_auc_mi = gof_auc_all_mi,
+    gof_al_complete = gof_al_all_complete,
+    gof_al_mi = gof_al_all_mi
+  )
+) |> 
+  writexl::write_xlsx(
+    path = here::here("results", "mod_results.xlsx")
+  )
+  
